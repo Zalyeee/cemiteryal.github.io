@@ -8,7 +8,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-/* ... (Seu CSS permanece o mesmo) ... */
+/* * ESTILOS CSS
+ * (Estilos originais e novos estilos para personalização)
+ */
 * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
 
 body {
@@ -20,9 +22,105 @@ body {
   /* Cursor Padrão do site */
   cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" style="font-size: 20px;"><text y="20">🕯️</text></svg>') 12 12, auto;
 }
-/* ... (Restante do CSS) ... */
+
+/* FUNDO ANIMADO */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(0,255,180,0.08), transparent 40%),
+    radial-gradient(circle at 80% 60%, rgba(0,140,255,0.08), transparent 40%);
+  animation: bgmove 12s infinite alternate;
+  z-index: -1;
+}
+
+@keyframes bgmove {
+  from { transform: translateY(0); }
+  to { transform: translateY(-40px); }
+}
+
+/* MENU */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 14px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  z-index: 999;
+}
+
+nav a {
+  color: #fff;
+  margin-left: 18px;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: 0.3s;
+}
+
+nav a:hover { color: #25d366; }
+
+/* CONTAINER PRINCIPAL */
+.container {
+  max-width: 1100px;
+  margin: 110px auto 60px;
+  padding: 20px;
+}
+
+/* TITULO */
+h1 {
+  text-align: center;
+  letter-spacing: 1px;
+  text-shadow: 0 0 15px rgba(0,255,180,0.35);
+}
+
+/* CARDS E SEÇÕES (VIDRO) */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px,1fr));
+  gap: 22px;
+  margin-top: 40px;
+}
+
+.card {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(16px);
+  border-radius: 20px;
+  padding: 22px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 0 25px rgba(0,255,180,0.18), inset 0 0 15px rgba(255,255,255,0.06);
+  transition: 0.35s;
+}
+.card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 0 35px rgba(0,255,180,0.35), inset 0 0 20px rgba(255,255,255,0.08);
+}
+.card img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.35);
+}
+.unavailable {
+  margin-top: 12px;
+  padding: 8px;
+  border-radius: 14px;
+  border: 2px dashed rgba(255,80,80,0.9);
+  animation: pulse 1.4s infinite;
+  font-size: 0.85rem;
+}
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
 .btn {
-  /* ... (Estilos do Botão) ... */
   display: inline-block;
   margin-top: 18px;
   padding: 13px 30px;
@@ -36,7 +134,90 @@ body {
   box-shadow: 0 0 25px rgba(0,255,200,0.45);
   transition: 0.3s;
 }
-/* ... (Restante do CSS) ... */
+.btn:hover {
+  transform: scale(1.07);
+  box-shadow: 0 0 40px rgba(0,255,200,0.75);
+}
+.support, .secret {
+  margin-top: 60px;
+  text-align: center;
+  padding: 35px;
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(16px);
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+input {
+  padding: 11px;
+  border-radius: 12px;
+  border: none;
+  margin-top: 12px;
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.9); /* Para melhorar a visibilidade */
+  color: #000;
+}
+#secretContent {
+  display: none;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+/* Estilos da Personalização */
+.adm-selector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 0;
+  padding: 8px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+}
+.emoji-option {
+  font-size: 1.5rem;
+  padding: 0 5px;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.emoji-option:hover {
+  transform: scale(1.2);
+}
+.btn-select {
+  padding: 5px 10px;
+  margin: 0;
+  font-size: 0.8rem;
+}
+#chatWindow {
+  height: 250px;
+  overflow-y: scroll;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+  text-align: left;
+  background: rgba(0,0,0,0.3);
+}
+.chat-message {
+  margin-bottom: 8px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  background: rgba(0, 255, 213, 0.1);
+  word-wrap: break-word;
+}
+.chat-message strong {
+  color: #00ffd5;
+}
+
+/* RODAPE e CLIQUES (mantidos) */
+footer {
+  text-align: center;
+  opacity: 0.6;
+  font-size: 0.8rem;
+  margin: 50px 0;
+}
+@keyframes explode {
+  from { transform: scale(1); opacity: 1; }
+  to { transform: scale(3) translateY(-25px); opacity: 0; }
+}
 </style>
 </head>
 
@@ -54,7 +235,7 @@ body {
 
 <audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5c91c8b7b1.mp3"></audio>
 
-<audio id="backgroundMusic" loop src="penumbra_musica.mp3"></audio>
+<audio id="backgroundMusic" loop src="https://raw.githubusercontent.com/zalyeee/cemiteryal.github.io/main/audio/penumbra_musica.mp3"></audio>
 
 <div class="container" id="inicio">
 <h1>Cemiteryal Death Carneficine</h1>
@@ -146,8 +327,8 @@ let currentEmoji = "🕯️";
 let userName = null;
 
 const clickSound = document.getElementById("clickSound");
-const backgroundMusic = document.getElementById("backgroundMusic"); // NOVO: Elemento da música de fundo
-let hasStartedMusic = false; // NOVO: Flag para iniciar a música só no primeiro clique
+const backgroundMusic = document.getElementById("backgroundMusic"); // Elemento da música de fundo
+let hasStartedMusic = false; // Flag para iniciar a música só no primeiro clique
 
 // Dados dos ADMs para a Personalização
 const admData = [
@@ -171,7 +352,8 @@ function playClickSound() {
     // 2. Toca a música de fundo NA PRIMEIRA INTERAÇÃO
     if (backgroundMusic && !hasStartedMusic) {
         backgroundMusic.volume = 0.4; // Volume baixo para não atrapalhar
-        backgroundMusic.play().catch(e => console.log("Erro ao iniciar a música:", e));
+        // Tentar tocar a música. Isso só funciona após uma interação do usuário.
+        backgroundMusic.play().catch(e => console.log("Música de fundo bloqueada. Necessita de interação do usuário."));
         hasStartedMusic = true;
     }
 }
@@ -180,7 +362,6 @@ function playClickSound() {
 // 1. LÓGICA DE PERSONALIZAÇÃO
 // ----------------------------------------------------
 
-// Função para gerar os seletores de emoji
 function generateAdmSelectors() {
     const list = document.getElementById("admList");
     let html = '';
@@ -203,13 +384,11 @@ function generateAdmSelectors() {
     list.innerHTML = html;
 }
 
-// Função que atualiza o cursor e o emoji de clique
 function selectEmoji(newEmoji) {
     currentEmoji = newEmoji;
     
     document.getElementById("currentEmojiDisplay").innerText = newEmoji;
     
-    // Atualiza o Cursor CSS
     const cursorUrl = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" style="font-size: 20px;"><text y="20">${newEmoji}</text></svg>') 12 12, auto`;
     document.body.style.cursor = cursorUrl;
     
@@ -220,7 +399,6 @@ function selectEmoji(newEmoji) {
 // 2. LÓGICA DE CHAT (INTEGRAÇÃO COM FIREBASE)
 // ----------------------------------------------------
 
-// Função para enviar uma mensagem
 async function sendMessage() {
     const chatInput = document.getElementById("chatInput");
     const message = chatInput.value.trim();
@@ -243,7 +421,6 @@ async function sendMessage() {
     }
 }
 
-// Função para carregar as mensagens em tempo real
 function loadMessages() {
     const chatWindow = document.getElementById("chatWindow");
     
@@ -272,7 +449,6 @@ function loadMessages() {
 // 3. LÓGICA DE INTERFACE
 // ----------------------------------------------------
 
-// Lógica de desbloqueio da Área Secreta
 function unlock() {
   const pass = document.getElementById("pass").value;
   // A SENHA SECRETA
@@ -289,11 +465,13 @@ function unlock() {
     } else {
         alert("Área Secreta Desbloqueada! Aguarde a conexão com o Firebase para o chat.");
     }
+    
+    // Toca a música também ao desbloquear
+    playClickSound();
 
   } else alert("Senha incorreta");
 }
 
-// Função placeholder para o WhatsApp (o som é tocado pelo listener global)
 function handleWhatsClick() {
   console.log("Abrindo link do WhatsApp...");
 }
@@ -329,4 +507,4 @@ document.addEventListener('DOMContentLoaded', generateAdmSelectors);
 </script>
 
 </body>
-  </html>
+</html>
