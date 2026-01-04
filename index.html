@@ -8,11 +8,15 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
+/* * ESTILOS CSS 
+ */
+
 * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
 
 body {
   margin: 0;
   min-height: 100vh;
+  /* Fundo Escuro com Gradiente */
   background: radial-gradient(circle at top, #1a1a1a, #000);
   color: #fff;
   overflow-x: hidden;
@@ -23,6 +27,7 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
+  /* Efeitos de brilho e luz sutil */
   background:
     radial-gradient(circle at 20% 20%, rgba(0,255,180,0.08), transparent 40%),
     radial-gradient(circle at 80% 60%, rgba(0,140,255,0.08), transparent 40%);
@@ -60,7 +65,7 @@ nav a {
 
 nav a:hover { color: #25d366; }
 
-/* CONTAINER */
+/* CONTAINER PRINCIPAL */
 .container {
   max-width: 1100px;
   margin: 110px auto 60px;
@@ -173,6 +178,7 @@ input {
   border-radius: 12px;
   border: none;
   margin-top: 12px;
+  outline: none; /* Adicionado para clareza visual */
 }
 
 #secretContent { display: none; }
@@ -214,6 +220,7 @@ footer {
   <div class="card"><img src="https://via.placeholder.com/150"><h3>ADM 2</h3><div class="unavailable">Link indisponível</div></div>
   <div class="card"><img src="https://via.placeholder.com/150"><h3>ADM 3</h3><div class="unavailable">Link indisponível</div></div>
   <div class="card"><img src="https://via.placeholder.com/150"><h3>ADM 4</h3><div class="unavailable">Link indisponível</div></div>
+  <div class="card"><img src="https://via.placeholder.com/150"><h3>ADM 5</h3><div class="unavailable">Link indisponível</div></div>
 </section>
 
 <div class="support">
@@ -239,9 +246,14 @@ footer {
 </div>
 
 <script>
-let clicks = 0;
-let emoji = "🕯️";
+/* * LÓGICA JAVASCRIPT
+ */
 
+let clicks = 0;
+let emoji = "🗝";
+const clickSound = document.getElementById("clickSound");
+
+// Função principal que rastreia cliques e cria o emoji explosivo
 document.addEventListener("click", e => {
   clicks++;
   const c = document.getElementById("clicks");
@@ -258,14 +270,21 @@ document.addEventListener("click", e => {
   setTimeout(()=>span.remove(),600);
 });
 
+// Lógica de desbloqueio da Área Secreta
 function unlock() {
   if (document.getElementById("pass").value === "isaacomebosta1010") {
     document.getElementById("secretContent").style.display = "block";
+    alert("Bem-vindo(a) à Área Secreta!");
   } else alert("Senha incorreta");
 }
 
+// Lógica para reproduzir o som no clique do WhatsApp
 function handleWhatsClick() {
-  document.getElementById("clickSound").play();
+  // Garante que o áudio comece do zero em cada clique
+  if (clickSound) {
+    clickSound.currentTime = 0;
+    clickSound.play();
+  }
   console.log("Clique WhatsApp");
 }
 </script>
