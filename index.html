@@ -1,237 +1,156 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cemiteryal Death Carneficine • Site Oficial</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 <style>
-* { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+* { box-sizing: border-box; font-family: Arial, sans-serif; }
 
 body {
   margin: 0;
-  min-height: 100vh;
-  background: radial-gradient(circle at top, #1a1a1a, #000);
+  background: radial-gradient(circle at top, #111, #000);
   color: #fff;
-  overflow-x: hidden;
 }
 
-/* FUNDO ANIMADO */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(0,255,180,0.08), transparent 40%),
-    radial-gradient(circle at 80% 60%, rgba(0,140,255,0.08), transparent 40%);
-  animation: bgmove 12s infinite alternate;
-  z-index: -1;
-}
-
-@keyframes bgmove {
-  from { transform: translateY(0); }
-  to { transform: translateY(-40px); }
-}
-
-/* MENU */
-nav {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  padding: 14px 22px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(0,0,0,0.45);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255,255,255,0.15);
-  z-index: 999;
-}
-
-nav a {
-  color: #fff;
-  margin-left: 18px;
-  text-decoration: none;
-  font-size: 0.95rem;
-  transition: 0.3s;
-}
-
-nav a:hover { color: #25d366; }
-
-/* CONTAINER */
 .container {
-  max-width: 1100px;
-  margin: 110px auto 60px;
+  max-width: 1000px;
+  margin: 80px auto;
   padding: 20px;
 }
 
-/* TITULO */
-h1 {
-  text-align: center;
-  letter-spacing: 1px;
-  text-shadow: 0 0 15px rgba(0,255,180,0.35);
-}
+h1 { text-align: center; }
 
-/* CARDS (VIDRO) */
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px,1fr));
-  gap: 22px;
-  margin-top: 40px;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap: 20px;
+  margin-top: 30px;
 }
 
 .card {
   background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(16px);
-  border-radius: 20px;
-  padding: 22px;
+  backdrop-filter: blur(14px);
+  border-radius: 18px;
+  padding: 20px;
   text-align: center;
-  border: 1px solid rgba(255,255,255,0.18);
-  box-shadow:
-    0 0 25px rgba(0,255,180,0.18),
-    inset 0 0 15px rgba(255,255,255,0.06);
-  transition: 0.35s;
-}
-
-.card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow:
-    0 0 35px rgba(0,255,180,0.35),
-    inset 0 0 20px rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 .card img {
-  width: 90px;
-  height: 90px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  border: 3px solid rgba(255,255,255,0.35);
 }
 
-/* LINK INDISPONIVEL */
 .unavailable {
-  margin-top: 12px;
+  margin-top: 10px;
   padding: 8px;
-  border-radius: 14px;
-  border: 2px dashed rgba(255,80,80,0.9);
-  animation: pulse 1.4s infinite;
-  font-size: 0.85rem;
+  border: 2px dashed #ff5555;
+  border-radius: 12px;
+  animation: pulse 1.5s infinite;
 }
 
 @keyframes pulse {
   0% { transform: scale(1); }
-  50% { transform: scale(1.06); }
+  50% { transform: scale(1.05); }
   100% { transform: scale(1); }
 }
 
-/* BOTÕES */
 .btn {
   display: inline-block;
-  margin-top: 18px;
-  padding: 13px 30px;
+  margin-top: 15px;
+  padding: 12px 26px;
   border-radius: 30px;
-  background: linear-gradient(45deg,#00ffd5,#00bfff);
+  background: #25d366;
   color: #000;
   font-weight: bold;
   text-decoration: none;
   cursor: pointer;
   border: none;
-  box-shadow: 0 0 25px rgba(0,255,200,0.45);
-  transition: 0.3s;
 }
 
-.btn:hover {
-  transform: scale(1.07);
-  box-shadow: 0 0 40px rgba(0,255,200,0.75);
-}
-
-/* SUPORTE */
-.support {
-  margin-top: 60px;
-  text-align: center;
-  padding: 35px;
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(16px);
-  border-radius: 22px;
-  border: 1px solid rgba(255,255,255,0.15);
-}
-
-/* AREA SECRETA */
 .secret {
-  margin-top: 70px;
-  text-align: center;
-  padding: 30px;
+  margin-top: 60px;
+  padding: 25px;
   background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(16px);
-  border-radius: 22px;
-  border: 1px solid rgba(255,255,255,0.15);
+  backdrop-filter: blur(14px);
+  border-radius: 20px;
+  text-align: center;
 }
 
 input {
-  padding: 11px;
-  border-radius: 12px;
+  padding: 10px;
+  border-radius: 10px;
   border: none;
-  margin-top: 12px;
 }
 
-#secretContent { display: none; }
-
-/* RODAPE */
 footer {
+  margin-top: 50px;
   text-align: center;
   opacity: 0.6;
-  font-size: 0.8rem;
-  margin: 50px 0;
-}
-
-/* CLIQUES */
-@keyframes explode {
-  from { transform: scale(1); opacity: 1; }
-  to { transform: scale(3) translateY(-25px); opacity: 0; }
 }
 </style>
 </head>
 
 <body>
 
-<nav>
-  <div>🕯️ <strong>Cemiteryal</strong></div>
-  <div>
-    <a href="#inicio">Início</a>
-    <a href="#admins">ADMs</a>
-    <a href="#secreto">Área Secreta</a>
+<div class="container">
+<h1>🕯️ Cemiteryal Death Carneficine</h1>
+
+<p style="text-align:center">
+Bem-vind* ao site oficial do canal Cemiteryal. Aqui você encontra nossos ADMs, canal e contato.
+</p>
+
+<section class="cards">
+  <div class="card">
+    <img src="https://via.placeholder.com/150">
+    <h3>𝐙𝚊𝚕𝚢𝚎</h3>
+    <div class="unavailable">Link indisponível</div>
   </div>
-</nav>
 
-<audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5c91c8b7b1.mp3"></audio>
+  <div class="card">
+    <img src="https://via.placeholder.com/150">
+    <h3>𝐘𝚘𝚛𝚒𝚑𝚊𝚔𝚞</h3>
+    <div class="https://linktr.ee/yorihaku">Linktree do yorihaku</div>
+  </div>
 
-<div class="container" id="inicio">
-<h1>Cemiteryal Death Carneficine</h1>
+  <div class="card">
+    <img src="https://via.placeholder.com/150">
+    <h3>ADM 3</h3>
+    <div class="unavailable">Link indisponível</div>
+  </div>
 
-<section id="admins" class="cards">
-  <div class="card"><img src="https://via.placeholder.com/150"><h3>ADM 1</h3><div class="unavailable">Link indisponível</div></div>
-  <div class="card"><img src="https://via.placeholder.com/150"><h3>ADM 2</h3><div class="unavailable">Link indisponível</div></div>
-  <div class="card"><img src="https://via.placeholder.com/150"><h3>ADM 3</h3><div class="unavailable">Link indisponível</div></div>
-  <div class="card"><img src="https://via.placeholder.com/150"><h3>ADM 4</h3><div class="unavailable">Link indisponível</div></div>
-  <div class="card"><img scr="https://via.placeholder.com/150"><h3>ADM 5</h3><div class="unavailable">Link indisponível</div></div>
+  <div class="card">
+    <img src="https://via.placeholder.com/150">
+    <h3>ADM 4</h3>
+    <div class="unavailable">Link indisponível</div>
+  </div>
+         <div class="card">
+    <img src="https://via.placeholder.com/150">
+    <h3>ADM 5</h3>
+    <div class="unavailable">Link indisponível</div>
+         </div>
 </section>
+        
 
-<div class="support">
-  <p><strong>Suporte ou parceria</strong></p>
-  <button class="btn" onclick="handleWhatsClick()">Entre em contato</button><br>
-  <a class="btn" href="#">📢 Canal do WhatsApp</a>
+<div style="text-align:center;margin-top:40px">
+<p><strong>Suporte ou parceria</strong></p>
+<button class="btn" onclick="whatsClick()">Entre em contato</button>
 </div>
 
-<section id="secreto" class="secret">
-  <h3>🔒 Área Secreta</h3>
-  <input type="password" id="pass" placeholder="Senha">
-  <br>
-  <button class="btn" onclick="unlock()">Entrar</button>
+<section class="secret">
+<h3>🔒 Área Secreta</h3>
+<input type="password" id="pass" placeholder="Senha">
+<br><br>
+<button class="btn" onclick="unlock()">Entrar</button>
 
-  <div id="secretContent">
-    <p>📊 Cliques nesta sessão: <span id="clicks">0</span></p>
-  </div>
+<div id="secretContent" style="display:none;margin-top:20px">
+<p>📊 Métricas locais</p>
+<p>Total de cliques: <span id="totalClicks">0</span></p>
+<p>Cliques no WhatsApp: <span id="whatsClicks">0</span></p>
+</div>
 </section>
 
 <footer>
@@ -240,34 +159,65 @@ footer {
 </div>
 
 <script>
-let clicks = 0;
-let emoji = "🗝";
-
-document.addEventListener("click", e => {
-  clicks++;
-  const c = document.getElementById("clicks");
-  if (c) c.innerText = clicks;
-
-  const span = document.createElement("span");
-  span.innerText = emoji;
-  span.style.position = "fixed";
-  span.style.left = e.clientX + "px";
-  span.style.top = e.clientY + "px";
-  span.style.pointerEvents = "none";
-  span.style.animation = "explode 0.6s ease forwards";
-  document.body.appendChild(span);
-  setTimeout(()=>span.remove(),600);
-});
-
-function unlock() {
-  if (document.getElementById("pass").value === "isaacomebosta1010") {
-    document.getElementById("secretContent").style.display = "block";
-  } else alert("Senha incorreta");
+/* ========= MÉTRICAS ========= */
+let metrics = JSON.parse(localStorage.getItem("metrics")) || {
+  totalClicks: 0,
+  whatsClicks: 0,
+  lastClick: 0,
+  lastLogin: 0
 }
 
-function handleWhatsClick() {
-  document.getElementById("clickSound").play();
-  console.log("Clique WhatsApp");
+function saveMetrics() {
+  localStorage.setItem("metrics", JSON.stringify(metrics))
+}
+
+/* ========= CONTADOR GLOBAL ========= */
+document.addEventListener("click", () => {
+  metrics.totalClicks++
+  saveMetrics()
+})
+
+/* ========= ANTI-SPAM DE CLIQUE ========= */
+function canClick(delay = 3000) {
+  const now = Date.now()
+  if (now - metrics.lastClick < delay) return false
+  metrics.lastClick = now
+  saveMetrics()
+  return true
+}
+
+/* ========= BOTÃO WHATS ========= */
+function whatsClick() {
+  if (!canClick()) {
+    alert("Aguarde alguns segundos antes de clicar novamente.")
+    return
+  }
+
+  metrics.whatsClicks++
+  saveMetrics()
+
+  // depois aqui entra o aviso pro BOT
+  window.open("https://wa.me/550000000000", "_blank")
+}
+
+/* ========= ÁREA SECRETA ========= */
+function unlock() {
+  const now = Date.now()
+  if (now - metrics.lastLogin < 5000) {
+    alert("Aguarde antes de tentar novamente.")
+    return
+  }
+
+  metrics.lastLogin = now
+  saveMetrics()
+
+  if (document.getElementById("pass").value === "isaacomebosta1010") {
+    document.getElementById("secretContent").style.display = "block"
+    document.getElementById("totalClicks").innerText = metrics.totalClicks
+    document.getElementById("whatsClicks").innerText = metrics.whatsClicks
+  } else {
+    alert("Senha incorreta.")
+  }
 }
 </script>
 
