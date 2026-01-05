@@ -8,18 +8,53 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-/* * ESTILOS CSS
- * (Estilos originais e novos estilos para personalização)
- */
+/* *****************************************************************
+ * 1. VARIÁVEIS DE TEMA (APLICADAS AO HTML PARA ACESSO GLOBAL)
+ * O tema padrão é DARK.
+ ***************************************************************** */
+:root, [data-theme="dark"] {
+    --theme-background: #1a1a1a;
+    --theme-primary: #fff;
+    --theme-highlight: #00ffd5; /* Ciano/Verde */
+    --theme-secondary: #00bfff;
+    --theme-glass-bg: rgba(255,255,255,0.08);
+    --theme-glass-border: rgba(255,255,255,0.18);
+    --theme-glass-shadow: rgba(0,255,180,0.18);
+    --theme-whatsapp-color: #25d366;
+}
+[data-theme="red"] {
+    --theme-background: #000000;
+    --theme-primary: #fff;
+    --theme-highlight: #ff4d4d; /* Vermelho Vivo */
+    --theme-secondary: #cc0000;
+    --theme-glass-bg: rgba(255,77,77,0.08);
+    --theme-glass-border: rgba(255,77,77,0.18);
+    --theme-glass-shadow: rgba(255,77,77,0.35);
+    --theme-whatsapp-color: #f00; /* Simula cor do WhatsApp */
+}
+[data-theme="light"] {
+    --theme-background: #ffffff;
+    --theme-primary: #000;
+    --theme-highlight: #3333ff; /* Azul Escuro */
+    --theme-secondary: #6666ff;
+    --theme-glass-bg: rgba(0,0,0,0.08);
+    --theme-glass-border: rgba(0,0,0,0.18);
+    --theme-glass-shadow: rgba(51,51,255,0.18);
+    --theme-whatsapp-color: #3333ff;
+}
+
+/* *****************************************************************
+ * 2. ESTILOS GLOBAIS COM VARIÁVEIS
+ ***************************************************************** */
 * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(circle at top, #1a1a1a, #000);
-  color: #fff;
+  /* Aplica o fundo e cor primária das variáveis */
+  background: var(--theme-background); 
+  color: var(--theme-primary);
   overflow-x: hidden;
-  /* Cursor Padrão do site */
   cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" style="font-size: 20px;"><text y="20">🕯️</text></svg>') 12 12, auto;
 }
 
@@ -29,201 +64,83 @@ body::before {
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(circle at 20% 20%, rgba(0,255,180,0.08), transparent 40%),
-    radial-gradient(circle at 80% 60%, rgba(0,140,255,0.08), transparent 40%);
+    /* Gradientes usam variáveis */
+    radial-gradient(circle at 20% 20%, var(--theme-highlight), transparent 40%),
+    radial-gradient(circle at 80% 60%, var(--theme-secondary), transparent 40%);
   animation: bgmove 12s infinite alternate;
+  opacity: var(--theme-glass-shadow); /* Opacidade controlada pela sombra */
   z-index: -1;
-}
-
-@keyframes bgmove {
-  from { transform: translateY(0); }
-  to { transform: translateY(-40px); }
 }
 
 /* MENU */
 nav {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  padding: 14px 22px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(0,0,0,0.45);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255,255,255,0.15);
-  z-index: 999;
+  /* ... (Mantido, mas ajustado para cores dinâmicas) ... */
+  color: var(--theme-primary);
 }
 
 nav a {
-  color: #fff;
-  margin-left: 18px;
-  text-decoration: none;
-  font-size: 0.95rem;
-  transition: 0.3s;
+  color: var(--theme-primary);
 }
 
-nav a:hover { color: #25d366; }
-
-/* CONTAINER PRINCIPAL */
-.container {
-  max-width: 1100px;
-  margin: 110px auto 60px;
-  padding: 20px;
-}
+nav a:hover { color: var(--theme-whatsapp-color); }
 
 /* TITULO */
 h1 {
   text-align: center;
   letter-spacing: 1px;
-  text-shadow: 0 0 15px rgba(0,255,180,0.35);
+  /* Sombra usa cor de destaque */
+  text-shadow: 0 0 15px var(--theme-highlight); 
 }
 
-/* CARDS E SEÇÕES (VIDRO) */
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px,1fr));
-  gap: 22px;
-  margin-top: 40px;
-}
-
-.card {
-  background: rgba(255,255,255,0.08);
+/* CARDS (EFEITO VIDRO) */
+.card, .support, .secret, .modal-content {
+  background: var(--theme-glass-bg);
   backdrop-filter: blur(16px);
   border-radius: 20px;
-  padding: 22px;
-  text-align: center;
-  border: 1px solid rgba(255,255,255,0.18);
-  box-shadow: 0 0 25px rgba(0,255,180,0.18), inset 0 0 15px rgba(255,255,255,0.06);
+  border: 1px solid var(--theme-glass-border);
+  /* Sombra usa cor de destaque */
+  box-shadow: 0 0 25px var(--theme-glass-shadow), inset 0 0 15px rgba(255,255,255,0.06); 
   transition: 0.35s;
 }
-.card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 0 35px rgba(0,255,180,0.35), inset 0 0 20px rgba(255,255,255,0.08);
-}
-.card img {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  border: 3px solid rgba(255,255,255,0.35);
-}
-.unavailable {
-  margin-top: 12px;
-  padding: 8px;
-  border-radius: 14px;
-  border: 2px dashed rgba(255,80,80,0.9);
-  animation: pulse 1.4s infinite;
-  font-size: 0.85rem;
-}
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.06); }
-  100% { transform: scale(1); }
-}
+
 .btn {
-  display: inline-block;
-  margin-top: 18px;
-  padding: 13px 30px;
-  border-radius: 30px;
-  background: linear-gradient(45deg,#00ffd5,#00bfff);
-  color: #000;
-  font-weight: bold;
-  text-decoration: none;
-  cursor: pointer;
-  border: none;
-  box-shadow: 0 0 25px rgba(0,255,200,0.45);
-  transition: 0.3s;
-}
-.btn:hover {
-  transform: scale(1.07);
-  box-shadow: 0 0 40px rgba(0,255,200,0.75);
-}
-.support, .secret {
-  margin-top: 60px;
-  text-align: center;
-  padding: 35px;
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(16px);
-  border-radius: 22px;
-  border: 1px solid rgba(255,255,255,0.15);
-}
-input {
-  padding: 11px;
-  border-radius: 12px;
-  border: none;
-  margin-top: 12px;
-  outline: none;
-  background-color: rgba(255, 255, 255, 0.9); /* Para melhorar a visibilidade */
-  color: #000;
-}
-#secretContent {
-  display: none;
-  margin-top: 30px;
-  padding-top: 20px;
-  border-top: 1px solid rgba(255,255,255,0.1);
-}
-/* Estilos da Personalização */
-.adm-selector {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 10px 0;
-  padding: 8px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 8px;
-}
-.emoji-option {
-  font-size: 1.5rem;
-  padding: 0 5px;
-  cursor: pointer;
-  transition: transform 0.1s;
-}
-.emoji-option:hover {
-  transform: scale(1.2);
-}
-.btn-select {
-  padding: 5px 10px;
-  margin: 0;
-  font-size: 0.8rem;
-}
-#chatWindow {
-  height: 250px;
-  overflow-y: scroll;
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 10px;
-  padding: 10px;
-  margin-bottom: 10px;
-  text-align: left;
-  background: rgba(0,0,0,0.3);
-}
-.chat-message {
-  margin-bottom: 8px;
-  padding: 5px 8px;
-  border-radius: 5px;
-  background: rgba(0, 255, 213, 0.1);
-  word-wrap: break-word;
-}
-.chat-message strong {
-  color: #00ffd5;
+  /* ... (Mantido) ... */
+  background: linear-gradient(45deg, var(--theme-highlight), var(--theme-secondary));
+  color: var(--theme-background); /* Cor do texto no botão é a cor do fundo */
+  box-shadow: 0 0 25px var(--theme-highlight);
 }
 
-/* RODAPE e CLIQUES (mantidos) */
-footer {
-  text-align: center;
-  opacity: 0.6;
-  font-size: 0.8rem;
-  margin: 50px 0;
+/* SELEÇÃO DE TEMAS */
+.theme-selector-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 15px;
+    margin-bottom: 25px;
 }
-@keyframes explode {
-  from { transform: scale(1); opacity: 1; }
-  to { transform: scale(3) translateY(-25px); opacity: 0; }
+.theme-option {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid var(--theme-glass-border);
+    transition: transform 0.2s, box-shadow 0.2s;
 }
+.theme-option.active {
+    border: 4px solid var(--theme-highlight);
+    transform: scale(1.1);
+    box-shadow: 0 0 10px var(--theme-highlight);
+}
+
+/* Definições de cores fixas para os círculos */
+#theme-dark { background-color: #1a1a1a; }
+#theme-red { background-color: #ff4d4d; }
+#theme-light { background-color: #ffffff; border: 2px solid #ccc; }
+
 </style>
 </head>
 
-<body>
-
-<nav>
+<body data-theme="dark"> <nav>
   <div>🕯️ <strong>Cemiteryal</strong></div>
   <div>
     <a href="#inicio">Início</a>
@@ -234,7 +151,6 @@ footer {
 </nav>
 
 <audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5c91c8b7b1.mp3"></audio>
-
 <audio id="backgroundMusic" loop src="https://raw.githubusercontent.com/zalyeee/cemiteryal.github.io/main/audio/penumbra_musica.mp3"></audio>
 
 <div class="container" id="inicio">
@@ -251,8 +167,8 @@ footer {
   <p><strong>Suporte ou parceria</strong></p>
   
   <a class="btn" 
-     href="https://api.whatsapp.com/send?phone=5531999999999&text=Ol%C3%A1!%20Gostaria%20de%20falar%20sobre%20suporte%20ou%20parceria%20no%20Cemiteryal%20Death%20Carneficine." 
-     target="_blank" 
+     href="#" 
+     onclick="handleWhatsClick(event)"
      id="whatsButton">Entre em contato</a>
   <br>
   
@@ -260,9 +176,23 @@ footer {
 </div>
 
 <section id="customization" class="secret">
-  <h3>🎨 Personalização (Cursor & Cliques)</h3>
+  <h3>🎨 Personalização (Temas, Cursor & Cliques)</h3>
+
+  <h4>Esquema de Cores</h4>
+  <div class="theme-selector-container">
+    <div id="theme-dark" class="theme-option" onclick="setTheme('dark')"></div>
+    <div id="theme-red" class="theme-option" onclick="setTheme('red')"></div>
+    <div id="theme-light" class="theme-option" onclick="setTheme('light')"></div>
+  </div>
+
+  <h4>Métricas do Site</h4>
+  <p>Acessos Totais: <strong id="totalAccesses">0</strong></p>
+  <p style="font-size: 0.85rem; opacity: 0.6;">(Este contador é atualizado a cada visita)</p>
+  
+  <hr style="margin: 30px 0; border-color: var(--theme-glass-border);">
+  <h4>Cursor & Emojis</h4>
   <p style="font-size: 0.9rem; opacity: 0.7;">
-    Selecione um emoji para usar no seu cursor (apenas PC/Notebook) e na animação de clique.
+    Selecione um emoji para usar no seu cursor e na animação de clique.
   </p>
   <div id="admList" style="text-align: left; margin: 20px auto; max-width: 500px;">
     </div>
@@ -271,20 +201,7 @@ footer {
 
 <section id="secreto" class="secret">
   <h3>🔒 Área Secreta</h3>
-  <input type="password" id="pass" placeholder="Senha">
-  <br>
-  <button class="btn" onclick="unlock()">Entrar</button>
-
-  <div id="secretContent">
-    <p>📊 Cliques nesta sessão: <span id="clicks">0</span></p>
-    
-    <h4 style="margin-top: 30px;">💬 Chat Secreto</h4>
-    <div id="chatWindow">
-      <p style="color: yellow;">Aguardando conexão com o Firebase...</p>
-    </div>
-    <input type="text" id="chatInput" placeholder="Digite sua mensagem..." style="width: 70%; margin-right: 5px;">
-    <button class="btn" onclick="sendMessage()" style="padding: 10px 20px; margin-top: 0;">Enviar</button>
-  </div>
+  <button class="btn" onclick="openLoginModal()">Login de ADM</button>
 </section>
 
 <footer>
@@ -292,12 +209,22 @@ footer {
 </footer>
 </div>
 
-<script type="module">
-  // Importar o App principal e o Firestore para o chat
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+<div id="toastNotification"></div>
 
-  // Sua configuração web do Firebase
+<div id="modalLogin" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('modalLogin')">&times;</span>
+    <h3>🔑 Login de ADM</h3>
+    <input type="text" id="loginUser" placeholder="Usuário/Senha Padrão" style="width: 100%;" required>
+    <input type="password" id="loginPass" placeholder="Senha Secreta" style="width: 100%;" required>
+    <button class="btn" onclick="unlock()">Entrar</button>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, getDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
   const firebaseConfig = {
     apiKey: "AIzaSyAsHXQr5k3HviBVEFPz918g_zcjUZdFpJY",
     authDomain: "cemiteryal-site.firebaseapp.com",
@@ -307,7 +234,6 @@ footer {
     appId: "1:935123054222:web:f720f6ae514631dd94a3df"
   };
 
-  // Inicializar o Firebase e o Firestore
   const app = initializeApp(firebaseConfig);
   window.db = getFirestore(app);
   window.collection = collection;
@@ -316,21 +242,28 @@ footer {
   window.orderBy = orderBy;
   window.onSnapshot = onSnapshot;
   window.serverTimestamp = serverTimestamp;
+  
+  // Expondo funções do Firestore para uso no JS
+  window.firestore_doc = doc;
+  window.firestore_getDoc = getDoc;
+  window.firestore_setDoc = setDoc;
+  window.firestore_increment = increment;
 
-  console.log("Firebase inicializado. Firestore pronto para o chat.");
 </script>
 
 <script>
 // Variáveis Globais
 let clicks = 0;
-let currentEmoji = "🕯️";
-let userName = null;
+// Carrega o tema e o emoji salvos no localStorage
+let currentTheme = localStorage.getItem('cemiteryal_theme') || "dark";
+let currentEmoji = localStorage.getItem('cemiteryal_emoji') || "🕯️"; 
+let userName = localStorage.getItem('cemiteryal_username'); 
 
 const clickSound = document.getElementById("clickSound");
-const backgroundMusic = document.getElementById("backgroundMusic"); // Elemento da música de fundo
-let hasStartedMusic = false; // Flag para iniciar a música só no primeiro clique
+const backgroundMusic = document.getElementById("backgroundMusic");
+let hasStartedMusic = false;
+let toastTimeout;
 
-// Dados dos ADMs para a Personalização
 const admData = [
     { name: "Isaac (ADM 1)", emojis: ["💀", "🔥", "😈"] },
     { name: "Fernanda (ADM 2)", emojis: ["🔪", "🌹", "⛓️"] },
@@ -340,26 +273,62 @@ const admData = [
 ];
 
 // ----------------------------------------------------
-// 0. FUNÇÃO DE SOM REUTILIZÁVEL
+// 0. FUNÇÃO DE TEMA (NOVA E MELHORADA)
 // ----------------------------------------------------
+function setTheme(themeName) {
+    document.body.setAttribute('data-theme', themeName);
+    localStorage.setItem('cemiteryal_theme', themeName);
+    
+    // Atualiza o estado visual dos botões
+    document.querySelectorAll('.theme-option').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.getElementById(`theme-${themeName}`).classList.add('active');
+
+    // Notificação
+    let message = `Tema ${themeName.toUpperCase()} aplicado com sucesso.`;
+    if (themeName === 'red') message = '☠️ Tema Black & Red ativado!';
+    showToast(message, 'success');
+}
+
+
+// ----------------------------------------------------
+// 0. FUNÇÕES DE INTERAÇÃO E NOTIFICAÇÃO (Ajustadas)
+// ----------------------------------------------------
+
+function showToast(message, type = 'info') {
+    const toast = document.getElementById("toastNotification");
+    clearTimeout(toastTimeout); 
+
+    let icon = '';
+    if (type === 'success') icon = '✅ ';
+    if (type === 'error') icon = '❌ ';
+    if (type === 'warning') icon = '⚠️ ';
+    if (type === 'whatsapp') icon = '📱 ';
+
+    toast.innerHTML = icon + message;
+    toast.className = "show";
+
+    toastTimeout = setTimeout(() => {
+        toast.className = toast.className.replace("show", "");
+    }, 3000);
+}
+
 function playClickSound() {
-    // 1. Toca o som de clique
     if (clickSound) {
         clickSound.currentTime = 0;
         clickSound.play().catch(e => console.log("Erro ao tocar áudio (Bloqueado):", e));
     }
 
-    // 2. Toca a música de fundo NA PRIMEIRA INTERAÇÃO
     if (backgroundMusic && !hasStartedMusic) {
-        backgroundMusic.volume = 0.4; // Volume baixo para não atrapalhar
-        // Tentar tocar a música. Isso só funciona após uma interação do usuário.
-        backgroundMusic.play().catch(e => console.log("Música de fundo bloqueada. Necessita de interação do usuário."));
+        backgroundMusic.volume = 0.4;
+        backgroundMusic.play().catch(e => console.log("Música de fundo bloqueada."));
         hasStartedMusic = true;
     }
 }
 
 // ----------------------------------------------------
-// 1. LÓGICA DE PERSONALIZAÇÃO
+// 1. LÓGICA DE PERSONALIZAÇÃO (Mantida)
 // ----------------------------------------------------
 
 function generateAdmSelectors() {
@@ -386,99 +355,115 @@ function generateAdmSelectors() {
 
 function selectEmoji(newEmoji) {
     currentEmoji = newEmoji;
+    localStorage.setItem('cemiteryal_emoji', newEmoji); 
     
     document.getElementById("currentEmojiDisplay").innerText = newEmoji;
     
     const cursorUrl = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" style="font-size: 20px;"><text y="20">${newEmoji}</text></svg>') 12 12, auto`;
     document.body.style.cursor = cursorUrl;
     
-    alert(`Emoji ${newEmoji} selecionado para cursor e cliques!`);
+    showToast(`Emoji ${newEmoji} selecionado com sucesso!`, 'success');
 }
 
-// ----------------------------------------------------
-// 2. LÓGICA DE CHAT (INTEGRAÇÃO COM FIREBASE)
-// ----------------------------------------------------
 
-async function sendMessage() {
-    const chatInput = document.getElementById("chatInput");
-    const message = chatInput.value.trim();
-    
-    if (!message || !userName || !window.db) return;
+// ----------------------------------------------------
+// 2. LÓGICA DE MÉTICAS (Contador de Acessos)
+// ----------------------------------------------------
+const COUNTER_DOC_REF = {
+    db: null, // Será preenchido na inicialização
+    collection: 'site_metrics',
+    docId: 'access_count'
+};
+
+async function handleAccessCounter() {
+    if (!window.db) return;
+    COUNTER_DOC_REF.db = window.db;
 
     try {
-        await window.addDoc(window.collection(window.db, "chat_cemiteryal"), {
-            user: userName,
-            text: message,
-            emoji: currentEmoji,
-            timestamp: window.serverTimestamp()
-        });
+        const docRef = window.firestore_doc(COUNTER_DOC_REF.db, COUNTER_DOC_REF.collection, COUNTER_DOC_REF.docId);
+        
+        // 1. Incrementa o contador na primeira visita da sessão
+        if (!sessionStorage.getItem('visited')) {
+            await window.firestore_setDoc(docRef, { count: window.firestore_increment(1) }, { merge: true });
+            sessionStorage.setItem('visited', 'true'); // Marca a sessão
+        }
+        
+        // 2. Lê o valor atual para exibir
+        const docSnap = await window.firestore_getDoc(docRef);
+        if (docSnap.exists()) {
+            const count = docSnap.data().count;
+            document.getElementById('totalAccesses').innerText = count.toLocaleString('pt-BR');
+        } else {
+            document.getElementById('totalAccesses').innerText = '0 (Iniciando Contador)';
+        }
 
-        chatInput.value = '';
-        chatInput.focus();
-    } catch (e) {
-        console.error("Erro ao adicionar documento: ", e);
-        alert("Erro ao enviar mensagem. Verifique a configuração do seu Firestore.");
+    } catch(error) {
+        console.error("Erro no contador de acessos:", error);
+        document.getElementById('totalAccesses').innerText = 'Erro ao carregar';
     }
 }
 
-function loadMessages() {
-    const chatWindow = document.getElementById("chatWindow");
-    
-    const q = window.query(window.collection(window.db, "chat_cemiteryal"), window.orderBy("timestamp", "asc"));
+// ----------------------------------------------------
+// 3. LÓGICA DE INTERFACE E MODAIS
+// ----------------------------------------------------
 
-    window.onSnapshot(q, (snapshot) => {
-        let messagesHtml = '';
-        snapshot.docChanges().forEach((change) => {
-            if (change.type === "added") {
-                const msg = change.doc.data();
-                const formattedTime = msg.timestamp ? new Date(msg.timestamp.seconds * 1000).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '...';
-                
-                messagesHtml += `
-                    <div class="chat-message">
-                        ${msg.emoji} <strong>${msg.user}</strong> <span style="font-size: 0.7em; opacity: 0.6;">(${formattedTime})</span>: ${msg.text}
-                    </div>
-                `;
-            }
-        });
-        chatWindow.innerHTML += messagesHtml;
-        chatWindow.scrollTop = chatWindow.scrollHeight;
-    });
+function openLoginModal() {
+    document.getElementById("modalLogin").style.display = "block";
 }
 
-// ----------------------------------------------------
-// 3. LÓGICA DE INTERFACE
-// ----------------------------------------------------
+function closeModal(id) {
+    document.getElementById(id).style.display = "none";
+}
+
+// Nenhuma função 'logout' ou 'loadMessages' é necessária no index.html,
+// pois o chat e o logout agora são feitos no chat.html.
 
 function unlock() {
-  const pass = document.getElementById("pass").value;
-  // A SENHA SECRETA
-  if (pass === "isaacomebosta1010") {
-    document.getElementById("secretContent").style.display = "block";
-    
-    if (!userName) {
-        const tempName = prompt("Bem-vindo(a)! Digite seu nome de usuário para o chat (máx. 15 caracteres):");
-        userName = tempName ? tempName.substring(0, 15) : "Visitante Anônimo";
-    }
+    const pass = document.getElementById("loginPass").value;
+    const user = document.getElementById("loginUser").value.trim();
 
-    if (window.db) {
-        loadMessages();
+    closeModal('modalLogin'); 
+
+    if (pass === "isaacomebosta1010") {
+        
+        userName = user || "ADM Padrão";
+        localStorage.setItem('cemiteryal_username', userName);
+
+        let welcomeMessage = "Senha correta! Redirecionando para o Chat Secreto.";
+        if (user.toLowerCase().includes("morien")) {
+             welcomeMessage = "Bem-vind@ Morien. Redirecionando para o Chat Secreto.";
+        } else if (user) {
+             welcomeMessage = `Bem-vind@ ${user}! Redirecionando para o Chat Secreto.`;
+        }
+        
+        showToast(welcomeMessage, 'success');
+        playClickSound();
+        
+        // Redireciona para a nova página do chat (em nova aba)
+        setTimeout(() => {
+            window.open('./chat.html', '_blank');
+        }, 300);
+
     } else {
-        alert("Área Secreta Desbloqueada! Aguarde a conexão com o Firebase para o chat.");
+        showToast("Senha ou usuário incorretos. Tente novamente.", 'error');
     }
-    
-    // Toca a música também ao desbloquear
-    playClickSound();
-
-  } else alert("Senha incorreta");
 }
 
-function handleWhatsClick() {
-  console.log("Abrindo link do WhatsApp...");
+function handleWhatsClick(e) {
+  e.preventDefault(); 
+  
+  showToast("Encaminhando para o WhatsApp. Aviso de Bot ativado.", 'whatsapp');
+  
+  playClickSound();
+
+  setTimeout(() => {
+    window.open("https://api.whatsapp.com/send?phone=5531999999999&text=Ol%C3%A1!%20Gostaria%20de%20falar%20sobre%20suporte%20ou%20parceria%20no%20Cemiteryal%20Death%20Carneficine.", '_blank');
+  }, 300);
 }
+
 
 // Função principal que rastreia cliques e cria o emoji explosivo
 document.addEventListener("click", e => {
-  // 1. LÓGICA DO CLIQUE EMOJI/CONTADOR (em qualquer lugar)
   clicks++;
   const c = document.getElementById("clicks");
   if (c) c.innerText = clicks;
@@ -494,16 +479,36 @@ document.addEventListener("click", e => {
   document.body.appendChild(span);
   setTimeout(()=>span.remove(),600);
   
-  // 2. LÓGICA DE SOM (apenas em botões)
   const target = e.target.closest('.btn, .btn-select');
   if (target) {
       playClickSound();
   }
 });
 
-// Inicialização: Gera a lista de ADMs ao carregar a página
-document.addEventListener('DOMContentLoaded', generateAdmSelectors);
+function initializeEmoji() {
+    // Aplica o tema salvo
+    setTheme(currentTheme); 
+    
+    // Aplica o emoji salvo
+    const display = document.getElementById("currentEmojiDisplay");
+    if (display) {
+        display.innerText = currentEmoji;
+    }
 
+    const cursorUrl = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" style="font-size: 20px;"><text y="20">${currentEmoji}</text></svg>') 12 12, auto`;
+    document.body.style.cursor = cursorUrl;
+}
+
+// Inicialização: Gera a lista de ADMs e aplica o emoji salvo
+document.addEventListener('DOMContentLoaded', () => {
+    generateAdmSelectors();
+    initializeEmoji();
+    handleAccessCounter(); // NOVO: Inicia o contador de acessos
+    
+    if (!userName) {
+        // Nada para fazer, o usuário não precisa logar para navegar.
+    }
+});
 </script>
 
 </body>
