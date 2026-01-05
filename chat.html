@@ -177,7 +177,6 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
   import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
-  // IMPORTANTE: Importa o módulo de Autenticação
   import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
   const firebaseConfig = {
@@ -191,7 +190,6 @@
 
   const app = initializeApp(firebaseConfig);
   window.db = getFirestore(app);
-  // Inicializa e exporta o Auth
   window.auth = getAuth(app); 
   window.auth_signOut = signOut;
 
@@ -211,19 +209,21 @@
     let currentTheme = localStorage.getItem('cemiteryal_theme') || "dark"; 
 
     // ----------------------------------------------------
-    // INICIALIZAÇÃO E TEMA
+    // INICIALIZAÇÃO E TEMA (CORREÇÃO DO LOGIN)
     // ----------------------------------------------------
 
     function initializeChat() {
         // Aplica o tema salvo no <body>
         document.body.setAttribute('data-theme', currentTheme);
         
-        // Checagem de segurança
-        if (!userName) {
+        // CORREÇÃO: Checa se há um nome no localStorage E se há um usuário ativo no Firebase
+        if (!userName || !window.auth.currentUser) {
             alert("Sessão expirada ou Login necessário. Fechando chat.");
+            
             // Tenta avisar a janela principal e fechar
             try {
                 if (window.opener) {
+                    // Redireciona a página principal para o login secreto
                     window.opener.location.href = './index.html#secreto';
                 }
             } catch (e) {
@@ -233,7 +233,7 @@
             return;
         } 
         
-        // Exibe o nome e emoji
+        // Se a checagem passou, continua...
         document.getElementById('userNameDisplay').innerText = `${currentEmoji} ${userName}`;
         
         // Inicia o carregamento das mensagens
@@ -245,7 +245,7 @@
     }
 
     // ----------------------------------------------------
-    // LÓGICA DE CHAT (Inclui Suporte a Imagens)
+    // LÓGICA DE CHAT
     // ----------------------------------------------------
     
     // Expressão regular para detectar URLs de imagens
@@ -279,7 +279,6 @@
 
         window.onSnapshot(q, (snapshot) => {
             let messagesHtml = '';
-            // Checa se já está rolado para o final antes de adicionar a mensagem
             let shouldScroll = chatWindow.scrollHeight - chatWindow.scrollTop <= chatWindow.clientHeight + 10;
 
             snapshot.docChanges().forEach((change) => {
@@ -294,14 +293,10 @@
                     const match = text.match(IMAGE_REGEX);
                     if (match) {
                         const imageUrl = match[0];
-                        // Renderiza a imagem, e o resto da mensagem se houver
                         imageHtml = `<img src="${imageUrl}" alt="Imagem do Chat" onclick="window.open(this.src, '_blank')">`;
-                        // Remove a URL da imagem do texto principal se ela for a única coisa na mensagem
                         if (text.trim() === imageUrl) {
                             text = ''; 
-                        } else {
-                            // Se tiver texto antes ou depois, mantemos o texto e a imagem
-                        }
+                        } 
                     }
 
                     messagesHtml += `
@@ -315,7 +310,6 @@
             });
             chatWindow.innerHTML += messagesHtml;
             
-            // Garante que a rolagem vá para o final se já estava no final ou se é a primeira mensagem
             if (shouldScroll) {
                 chatWindow.scrollTop = chatWindow.scrollHeight;
             }
@@ -331,7 +325,7 @@
     });
     
     // ----------------------------------------------------
-    // LÓGICA DE LOGOUT (AGORA COM FIREBASE AUTH)
+    // LÓGICA DE LOGOUT
     // ----------------------------------------------------
 
     async function logout() {
@@ -346,7 +340,6 @@
 
         // 2. Limpa dados locais
         localStorage.removeItem('cemiteryal_username');
-        // Mantemos 'cemiteryal_registered' para o próximo login ir direto para o modal de login.
         
         // 3. Avisa a janela principal e fecha
         if (window.opener) {
