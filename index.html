@@ -135,13 +135,13 @@ h1 {
 .card {
   text-align: center;
 }
-/* CORREÇÃO DO CSS DA FOTO (GARANTINDO O CORTE CIRCULAR) */
+/* CORREÇÃO DO CSS DA FOTO (GARANTINDO O CORTE CIRCULAR SEM DISTORÇÃO) */
 .card img {
-    width: 150px; /* Tamanho fixo para garantir o círculo */
-    height: 150px; /* Tamanho fixo para garantir o círculo */
+    width: 150px; 
+    height: 150px; 
     max-width: none;
     border-radius: 50%; 
-    object-fit: cover; /* ESSENCIAL: Garante que a imagem preencha o círculo sem distorção */
+    object-fit: cover; 
     margin-bottom: 15px;
     border: 3px solid var(--theme-highlight);
     box-shadow: 0 0 10px var(--theme-highlight);
@@ -321,7 +321,7 @@ h1 {
   </div>
 </nav>
 
-<audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5c91c8b7b1.mp3"></audio>
+<audio id="clickSound" src="./audio/click.mp3"></audio>
 
 
 <div class="container" id="inicio">
@@ -331,7 +331,7 @@ h1 {
   <div class="card">
     <img src="https://i.imgur.com/IsaacPlaceholder.png" alt="Foto de Isaac (ADM 1)">
     <h3>Isaac (ADM 1)</h3>
-    <a href="#" class="btn-linktree" onclick="checkLink(event, 'https://linktr.ee/Isaac_Carneficine')">Linktree</a>
+    <a href="#" class="btn-linktree" onclick="checkLink(event, '')">Linktree</a>
   </div>
   
   <div class="card">
@@ -343,7 +343,7 @@ h1 {
   <div class="card">
     <img src="https://i.imgur.com/RafaelPlaceholder.png" alt="Foto de Rafael (ADM 3)">
     <h3>Rafael (ADM 3)</h3>
-    <a href="#" class="btn-linktree" onclick="checkLink(event, 'https://linktr.ee/Rafael_Carneficine')">Linktree</a>
+    <a href="#" class="btn-linktree" onclick="checkLink(event, '')">Linktree</a>
   </div>
   
   <div class="card">
@@ -355,7 +355,7 @@ h1 {
   <div class="card">
     <img src="https://i.imgur.com/GustavoPlaceholder.png" alt="Foto de Gustavo (ADM 5)">
     <h3>Gustavo (ADM 5)</h3>
-    <a href="#" class="btn-linktree" onclick="checkLink(event, 'https://linktr.ee/Gustavo_Carneficine')">Linktree</a>
+    <a href="#" class="btn-linktree" onclick="checkLink(event, '')">Linktree</a>
   </div>
 </section>
 
@@ -501,22 +501,41 @@ const admData = [
 ];
 
 // ----------------------------------------------------
-// LÓGICA DE ÁUDIO
+// LÓGICA DE ÁUDIO (Versão Corrigida)
 // ----------------------------------------------------
 
 function playClickSound() {
     if (clickSound) {
+        clickSound.volume = 1.0; 
         clickSound.currentTime = 0;
-        clickSound.play().catch(e => console.log("Erro ao tocar áudio (Bloqueado):", e));
+        
+        const playPromise = clickSound.play();
+        
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                // Áudio iniciado com sucesso
+            }).catch(error => {
+                // Console warning, mas o som está sendo tentado.
+                console.warn("Áudio pode estar sendo bloqueado: ", error.message); 
+            });
+        }
+    }
+}
+
+function initializeAudio() {
+    if (clickSound) {
+        clickSound.load(); 
+        document.body.removeEventListener('mousedown', initializeAudio);
     }
 }
 
 
 // ----------------------------------------------------
-// LÓGICA DE AUTENTICAÇÃO
+// LÓGICA DE AUTENTICAÇÃO (Versão Corrigida)
 // ----------------------------------------------------
 
 function usernameToEmail(username) {
+    // Garante que o formato é compatível com o email do Firebase
     return `${username.toLowerCase().replace(/[^a-z0-9]/g, '')}@cemiteryal.chat`;
 }
 
@@ -549,6 +568,7 @@ function checkSecretKey() {
     }
 }
 
+// CORREÇÃO: Função de registro revisada para estabilidade
 async function registerUser() {
     const user = document.getElementById("regUser").value.trim();
     const pass = document.getElementById("regPass").value;
@@ -562,8 +582,9 @@ async function registerUser() {
     const email = usernameToEmail(user);
 
     try {
-        await window.auth_createUser(window.auth, email, pass);
+        const userCredential = await window.auth_createUser(window.auth, email, pass);
         
+        // Login automático (O Firebase já logou o usuário após a criação)
         userName = user;
         localStorage.setItem('cemiteryal_username', userName);
         localStorage.setItem('cemiteryal_registered', 'true');
@@ -571,9 +592,9 @@ async function registerUser() {
 
         showToast(`Cadastro de ${userName} realizado! Redirecionando...`, 'success');
         
-        setTimeout(() => {
-            window.open('./chat.html', '_blank');
-        }, 500);
+        // Atraso para garantir a sincronização antes de abrir o chat
+        await new Promise(resolve => setTimeout(resolve, 500)); 
+        window.open('./chat.html', '_blank');
 
     } catch (error) {
         if (error.code === 'auth/email-already-in-use') {
@@ -582,10 +603,11 @@ async function registerUser() {
         } else {
             showToast(`Erro no cadastro: ${error.message}`, 'error');
         }
+        console.error("Erro no registro:", error);
     }
 }
 
-// CORREÇÃO: Garante que o username é salvo no localStorage após o login
+// CORREÇÃO: Função de login revisada para estabilidade
 async function signInUser() {
     const user = document.getElementById("loginUser").value.trim();
     const pass = document.getElementById("loginPass").value;
@@ -602,30 +624,31 @@ async function signInUser() {
         await window.auth_signIn(window.auth, email, pass);
         
         userName = user;
-        // ESSENCIAL PARA O CHAT FUNCIONAR
         localStorage.setItem('cemiteryal_username', userName);
         
         showToast(`Bem-vindo, ${userName}! Redirecionando...`, 'success');
         
-        setTimeout(() => {
-            window.open('./chat.html', '_blank');
-        }, 500);
+        // Atraso de 500ms para estabilizar a sessão antes de abrir a nova janela
+        await new Promise(resolve => setTimeout(resolve, 500)); 
+        
+        window.open('./chat.html', '_blank');
 
     } catch (error) {
-        showToast("Login falhou. Verifique Username e Senha.", 'error');
+        localStorage.removeItem('cemiteryal_username'); 
+        showToast("Login falhou. Verifique Username e Senha. Código: " + error.code, 'error');
+        console.error("Erro de login:", error);
     }
 }
 
 
 // ----------------------------------------------------
-// LÓGICA DE LINKTREE (ATUALIZADA PARA ERRO 404)
+// LÓGICA DE LINKTREE (FORÇANDO ERRO 404 PARA VAZIOS)
 // ----------------------------------------------------
 
 function checkLink(e, linkUrl) {
     e.preventDefault(); 
     
     if (!linkUrl || linkUrl.trim() === '') {
-        // Se estiver vazio, abre o novo pop-up de Erro 404
         openModal('error404Modal');
     } else {
         window.open(linkUrl, '_blank');
@@ -690,26 +713,29 @@ function handleWhatsClick(e) {
 }
 
 
-// ADIÇÃO DE SOM DE CLIQUE EM TODOS OS BOTÕES E LINKS
+// ADIÇÃO DE SOM DE CLIQUE E ANIMAÇÃO DE EMOJI EM TODOS OS LUGARES
 document.addEventListener("click", e => {
-  // Lógica de explosão de emoji
-  const span = document.createElement("span");
-  span.innerText = currentEmoji;
-  span.style.position = "fixed";
-  span.style.left = e.clientX + "px";
-  span.style.top = e.clientY + "px";
-  span.style.pointerEvents = "none";
-  span.style.animation = "explode 0.6s ease forwards"; 
-  span.style.zIndex = 1000;
-  document.body.appendChild(span);
-  setTimeout(()=>span.remove(),600);
-  
-  // Toca o som de clique
   const target = e.target;
-  const isInteractive = target.closest('.btn, .btn-select, .btn-linktree, .close') || target.tagName === 'A' || target.classList.contains('theme-option') || target.classList.contains('emoji-option');
+  
+  const isInteractive = target.closest('.btn, .btn-select, .btn-linktree, .close') || 
+                        target.tagName === 'A' || 
+                        target.classList.contains('theme-option') || 
+                        target.classList.contains('emoji-option');
   
   if (isInteractive) {
       playClickSound();
+
+      const span = document.createElement("span");
+      span.innerText = currentEmoji;
+      span.style.position = "fixed";
+      span.style.left = e.clientX + "px";
+      span.style.top = e.clientY + "px";
+      span.style.pointerEvents = "none";
+      span.style.fontSize = "24px"; 
+      span.style.animation = "explode 0.6s ease forwards"; 
+      span.style.zIndex = 1000;
+      document.body.appendChild(span);
+      setTimeout(()=>span.remove(),600);
   }
 });
 
@@ -781,6 +807,9 @@ function initializeEmoji() {
     }
     const cursorUrl = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" style="font-size: 20px;"><text y="20">${currentEmoji}</text></svg>') 12 12, auto`;
     document.body.style.cursor = cursorUrl;
+    
+    // Inicia a escuta para carregar o áudio na primeira interação
+    document.body.addEventListener('mousedown', initializeAudio, { once: true });
 }
 
 // Inicialização
@@ -792,4 +821,4 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 </body>
-    </html>
+</html>
