@@ -46,7 +46,7 @@
 }
 
 /* *****************************************************************
- * 2. ESTILOS GLOBAIS COM VARIÁVEIS (DECORAÇÕES RESTAURADAS)
+ * 2. ESTILOS GLOBAIS COM VARIÁVEIS
  ***************************************************************** */
 * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
 
@@ -121,8 +121,8 @@ h1 {
   margin-top: 40px;
 }
 
-/* CARDS, SEÇÕES, MODAL (EFEITO VIDRO E BRILHO RESTAURADO) */
-.card, .support, .secret, .modal-content {
+/* CARDS, SEÇÕES, MODAL (EFEITO VIDRO E BRILHO) */
+.card, .support, .secret, .modal-content, #unavailableModal .modal-content {
   background: var(--theme-glass-bg);
   backdrop-filter: blur(16px);
   border-radius: 20px;
@@ -135,6 +135,34 @@ h1 {
 .card {
   text-align: center;
 }
+.card img {
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+    border-radius: 50%; /* Imagem redonda */
+    object-fit: cover;
+    margin-bottom: 15px;
+    border: 3px solid var(--theme-highlight);
+    box-shadow: 0 0 10px var(--theme-highlight);
+}
+/* Linktree Button Style */
+.btn-linktree {
+  padding: 10px 20px;
+  margin-top: 10px;
+  background: var(--theme-highlight);
+  color: var(--theme-background);
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 8px;
+  display: block;
+  width: 90%;
+  margin: 10px auto 0;
+  transition: background-color 0.3s;
+}
+.btn-linktree:hover {
+    background: var(--theme-secondary);
+}
+
 
 /* Campos de INPUT */
 .modal-content input[type="text"], .modal-content input[type="password"] {
@@ -240,6 +268,14 @@ h1 {
   cursor: pointer;
 }
 
+/* ANIMAÇÃO DE EXPLOSÃO DE EMOJIS */
+@keyframes explode {
+    0% { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 5px var(--theme-highlight)); }
+    50% { transform: scale(1.5) translateY(-20px); opacity: 0.8; }
+    100% { transform: scale(0.5) translateY(-50px); opacity: 0; }
+}
+
+
 /* SELEÇÃO DE TEMAS */
 .theme-selector-container {
     display: flex;
@@ -270,8 +306,7 @@ h1 {
 
 <body data-theme="dark">
 
-<nav>
-  <div>🕯️ <strong>Cemiteryal</strong></div>
+<nav onclick="playClickSound()"> <div>🕯️ <strong>Cemiteryal</strong></div>
   <div>
     <a href="#inicio">Início</a>
     <a href="#admins">ADMs</a>
@@ -281,17 +316,41 @@ h1 {
 </nav>
 
 <audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5c91c8b7b1.mp3"></audio>
-<audio id="backgroundMusic" loop src="https://raw.githubusercontent.com/zalyeee/cemiteryal.github.io/main/audio/penumbra_musica.mp3"></audio>
+
 
 <div class="container" id="inicio">
 <h1>Cemiteryal Death Carneficine</h1>
 
 <section id="admins" class="cards">
-  <div class="card"><img src="https://via.placeholder.com/150"><h3>Isaac (ADM 1)</h3><div class="unavailable">Link indisponível</div></div>
-  <div class="card"><img src="https://via.placeholder.com/150"><h3>Fernanda (ADM 2)</h3><div class="unavailable">Link indisponível</div></div>
-  <div class="card"><img src="https://via.placeholder.com/150"><h3>Rafael (ADM 3)</h3><div class="unavailable">Link indisponível</div></div>
-  <div class="card"><img src="https://via.placeholder.com/150"><h3>Mariana (ADM 4)</h3><div class="unavailable">Link indisponível</div></div>
-  <div class="card"><img src="https://via.placeholder.com/150"><h3>Gustavo (ADM 5)</h3><div class="unavailable">Link indisponível</div></div> 
+  <div class="card">
+    <img src="https://i.imgur.com/IsaacPlaceholder.png" alt="Foto de Isaac (ADM 1)">
+    <h3>Isaac (ADM 1)</h3>
+    <a href="#" class="btn-linktree" onclick="checkLink(event, 'https://linktr.ee/Isaac_Carneficine')">Linktree</a>
+  </div>
+  
+  <div class="card">
+    <img src="https://i.imgur.com/FernandaPlaceholder.png" alt="Foto de Fernanda (ADM 2)">
+    <h3>Fernanda (ADM 2)</h3>
+    <a href="#" class="btn-linktree" onclick="checkLink(event, '')">Linktree</a> 
+  </div>
+  
+  <div class="card">
+    <img src="https://i.imgur.com/RafaelPlaceholder.png" alt="Foto de Rafael (ADM 3)">
+    <h3>Rafael (ADM 3)</h3>
+    <a href="#" class="btn-linktree" onclick="checkLink(event, 'https://linktr.ee/Rafael_Carneficine')">Linktree</a>
+  </div>
+  
+  <div class="card">
+    <img src="https://i.imgur.com/MarianaPlaceholder.png" alt="Foto de Mariana (ADM 4)">
+    <h3>Mariana (ADM 4)</h3>
+    <a href="#" class="btn-linktree" onclick="checkLink(event, '')">Linktree</a>
+  </div>
+  
+  <div class="card">
+    <img src="https://i.imgur.com/GustavoPlaceholder.png" alt="Foto de Gustavo (ADM 5)">
+    <h3>Gustavo (ADM 5)</h3>
+    <a href="#" class="btn-linktree" onclick="checkLink(event, 'https://linktr.ee/Gustavo_Carneficine')">Linktree</a>
+  </div>
 </section>
 
 <div class="support">
@@ -311,9 +370,9 @@ h1 {
 
   <h4>Esquema de Cores</h4>
   <div class="theme-selector-container">
-    <div id="theme-dark" class="theme-option" onclick="setTheme('dark')"></div>
-    <div id="theme-red" class="theme-option" onclick="setTheme('red')"></div>
-    <div id="theme-light" class="theme-option" onclick="setTheme('light')"></div>
+    <div id="theme-dark" class="theme-option" onclick="setTheme('dark'); playClickSound()"></div>
+    <div id="theme-red" class="theme-option" onclick="setTheme('red'); playClickSound()"></div>
+    <div id="theme-light" class="theme-option" onclick="setTheme('light'); playClickSound()"></div>
   </div>
 
   <h4>Métricas do Site</h4>
@@ -376,12 +435,20 @@ h1 {
   </div>
 </div>
 
+<div id="unavailableModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('unavailableModal')">&times;</span>
+    <h3>❌ Link Indisponível</h3>
+    <p>O Linktree para este ADM ainda não está disponível.</p>
+    <button class="btn" onclick="closeModal('unavailableModal')" style="margin-top: 5px;">Entendido</button>
+  </div>
+</div>
+
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
   import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, getDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
-  // NOVO: Importa a Autenticação
-  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAsHXQr5k3HviBVEFPz918g_zcjUZdFpJY",
@@ -394,20 +461,17 @@ h1 {
 
   const app = initializeApp(firebaseConfig);
   window.db = getFirestore(app);
-  // NOVO: Inicializa a Autenticação
   window.auth = getAuth(app); 
   
-  // Expondo funções do Firestore para uso no JS
+  // Expondo funções do Firebase para uso no JS
   window.firestore_doc = doc;
   window.firestore_getDoc = getDoc;
   window.firestore_setDoc = setDoc;
   window.firestore_increment = increment;
 
-  // Expondo funções do Auth para uso no JS
   window.auth_signIn = signInWithEmailAndPassword;
   window.auth_createUser = createUserWithEmailAndPassword;
   window.auth_signOut = signOut;
-  window.auth_onState = onAuthStateChanged;
 
 </script>
 
@@ -416,78 +480,63 @@ h1 {
 let clicks = 0;
 let currentTheme = localStorage.getItem('cemiteryal_theme') || "dark";
 let currentEmoji = localStorage.getItem('cemiteryal_emoji') || "🕯️"; 
-// O username agora será verificado no Auth
 let userName = localStorage.getItem('cemiteryal_username'); 
 let isRegistered = localStorage.getItem('cemiteryal_registered') === 'true';
 
 const clickSound = document.getElementById("clickSound");
-const backgroundMusic = document.getElementById("backgroundMusic");
-let hasStartedMusic = false;
 let toastTimeout;
 
-// CORREÇÃO: 5 ADMS na lista de emojis
 const admData = [
-    { name: "Isaac (ADM 1)", emojis: ["💀", "🔥", "😈"] },
-    { name: "Fernanda (ADM 2)", emojis: ["🔪", "🌹", "⛓️"] },
-    { name: "Rafael (ADM 3)", emojis: ["🌑", "⚡", "🕸️"] },
-    { name: "Mariana (ADM 4)", emojis: ["🩸", "🦄", "💔"] },
-    { name: "Gustavo (ADM 5)", emojis: ["👽", "✨", "💡"] },
+    { name: "𝐙alye", emojis: ["🎻", "🪻"] },
+    { name: "𝐘𝚘𝚔𝚒𝚑𝚊𝚛𝚞", emojis: ["🍷"] },
+    { name: "𝐊𝚊𝚢𝚒𝚎", emojis: ["👽"] },
+    { name: "𝐊𝚢𝚘" emojis: ["🍂"] },
+    { name: "𝐒𝚘𝚖𝚊", emojis: ["🩸"] },
 ];
 
 // ----------------------------------------------------
-// 0. FUNÇÃO DE TEMA
+// LÓGICA DE ÁUDIO (Música removida, som de clique ajustado)
 // ----------------------------------------------------
-function setTheme(themeName) {
-    document.body.setAttribute('data-theme', themeName);
-    localStorage.setItem('cemiteryal_theme', themeName);
-    
-    document.querySelectorAll('.theme-option').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    const targetButton = document.getElementById(`theme-${themeName}`);
-    if (targetButton) {
-        targetButton.classList.add('active');
-    }
 
-    let message = `Tema ${themeName.toUpperCase()} aplicado com sucesso.`;
-    if (themeName === 'red') message = '☠️ Tema Black & Red ativado!';
-    showToast(message, 'success');
+function playClickSound() {
+    if (clickSound) {
+        clickSound.currentTime = 0;
+        clickSound.play().catch(e => console.log("Erro ao tocar áudio (Bloqueado):", e));
+    }
 }
 
 
 // ----------------------------------------------------
-// 1. LÓGICA DE AUTENTICAÇÃO (NOVA)
+// LÓGICA DE AUTENTICAÇÃO
 // ----------------------------------------------------
 
-// Função utilitária para transformar username em um "e-mail" para o Firebase Auth
 function usernameToEmail(username) {
-    // Transforma o nome em um email seguro para o Firebase
     return `${username.toLowerCase().replace(/[^a-z0-9]/g, '')}@cemiteryal.chat`;
 }
 
-// 1. Abre o fluxo de login (decide entre o login rápido e a chave mestra)
 function openLoginFlow() {
+    playClickSound(); // Toca o som ao abrir o fluxo
     if (isRegistered) {
-        // Se já tem cadastro, vai direto para o login com username/senha
         openModal('modalLogin'); 
     } else {
-        // Se não tem cadastro, precisa da chave mestra primeiro
         openModal('modalSecret');
     }
 }
 
 function openSecretModal() {
+    playClickSound(); // Toca o som ao abrir o modal secreto
     closeModal('modalLogin');
     openModal('modalSecret');
 }
 
-// 2. Verifica a Chave Mestra
 function checkSecretKey() {
+    // playClickSound() será chamado pelo evento global no botão
     const pass = document.getElementById("secretKey").value;
     closeModal('modalSecret'); 
 
-    // A CHAVE MESTRA PADRÃO
-    if (pass === "isaacomebosta1010") {
+    const MASTER_KEY = "IsaacCarneficine2026"; 
+
+    if (pass === MASTER_KEY) {
         showToast("Chave Mestra correta! Prossiga para o cadastro.", 'success');
         openModal('modalRegister'); 
     } else {
@@ -495,8 +544,8 @@ function checkSecretKey() {
     }
 }
 
-// 3. Cadastra o Usuário (após a chave mestra)
 async function registerUser() {
+    // playClickSound() será chamado pelo evento global no botão
     const user = document.getElementById("regUser").value.trim();
     const pass = document.getElementById("regPass").value;
 
@@ -509,8 +558,8 @@ async function registerUser() {
     const email = usernameToEmail(user);
 
     try {
-        const userCredential = await window.auth_createUser(window.auth, email, pass);
-        // Sucesso no cadastro:
+        await window.auth_createUser(window.auth, email, pass);
+        
         userName = user;
         localStorage.setItem('cemiteryal_username', userName);
         localStorage.setItem('cemiteryal_registered', 'true');
@@ -523,7 +572,6 @@ async function registerUser() {
         }, 500);
 
     } catch (error) {
-        // Código 'auth/email-already-in-use' significa que o username já foi usado
         if (error.code === 'auth/email-already-in-use') {
             showToast("Username já em uso! Tente fazer login ou escolha outro nome.", 'error');
             openModal('modalLogin');
@@ -533,8 +581,8 @@ async function registerUser() {
     }
 }
 
-// 4. Faz Login do Usuário Registrado
 async function signInUser() {
+    // playClickSound() será chamado pelo evento global no botão
     const user = document.getElementById("loginUser").value.trim();
     const pass = document.getElementById("loginPass").value;
 
@@ -547,8 +595,8 @@ async function signInUser() {
     const email = usernameToEmail(user);
 
     try {
-        const userCredential = await window.auth_signIn(window.auth, email, pass);
-        // Sucesso no login:
+        await window.auth_signIn(window.auth, email, pass);
+        
         userName = user;
         localStorage.setItem('cemiteryal_username', userName);
         
@@ -565,14 +613,112 @@ async function signInUser() {
 
 
 // ----------------------------------------------------
-// 2. LÓGICA DE MÉTICAS (Contador de Acessos)
+// LÓGICA DE LINKTREE
 // ----------------------------------------------------
-const COUNTER_DOC_REF = {
-    db: null, 
-    collection: 'site_metrics',
-    docId: 'access_count'
-};
 
+function checkLink(e, linkUrl) {
+    e.preventDefault(); 
+    
+    // playClickSound() será chamado pelo evento global no botão
+    
+    if (!linkUrl || linkUrl.trim() === '') {
+        openModal('unavailableModal');
+    } else {
+        window.open(linkUrl, '_blank');
+    }
+}
+
+// ----------------------------------------------------
+// UTILITÁRIOS (Temas, Métrica, Modais, etc.)
+// ----------------------------------------------------
+
+function setTheme(themeName) {
+    // playClickSound() é chamado diretamente no HTML
+    document.body.setAttribute('data-theme', themeName);
+    localStorage.setItem('cemiteryal_theme', themeName);
+    
+    document.querySelectorAll('.theme-option').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    const targetButton = document.getElementById(`theme-${themeName}`);
+    if (targetButton) {
+        targetButton.classList.add('active');
+    }
+
+    let message = `Tema ${themeName.toUpperCase()} aplicado com sucesso.`;
+    if (themeName === 'red') message = '☠️ Tema Black & Red ativado!';
+    showToast(message, 'success');
+}
+
+function showToast(message, type = 'info') {
+    const toast = document.getElementById("toastNotification");
+    clearTimeout(toastTimeout); 
+
+    let icon = '';
+    if (type === 'success') icon = '✅ ';
+    if (type === 'error') icon = '❌ ';
+    if (type === 'warning') icon = '⚠️ ';
+    if (type === 'whatsapp') icon = '📱 ';
+
+    toast.innerHTML = icon + message;
+    toast.className = "show";
+
+    toastTimeout = setTimeout(() => {
+        toast.className = toast.className.replace("show", "");
+    }, 3000);
+}
+
+function openModal(id) {
+    document.getElementById(id).style.display = "block";
+}
+
+function closeModal(id) {
+    // playClickSound() será chamado pelo evento global no botão/close
+    document.getElementById(id).style.display = "none";
+}
+
+function handleWhatsClick(e) {
+  e.preventDefault(); 
+  // playClickSound() será chamado pelo evento global no botão
+  
+  showToast("Encaminhando para o WhatsApp. Aviso de Bot ativado.", 'whatsapp');
+  
+  setTimeout(() => {
+    window.open("https://api.whatsapp.com/send?phone=5531999999999&text=Ol%C3%A1!%20Gostaria%20de%20falar%20sobre%20suporte%20ou%20parceria%20no%20Cemiteryal%20Death%20Carneficine.", '_blank');
+  }, 300);
+}
+
+
+// ----------------------------------------------------
+// ADIÇÃO DE SOM DE CLIQUE EM TODOS OS BOTÕES E LINKS
+// ----------------------------------------------------
+
+document.addEventListener("click", e => {
+  // Lógica de explosão de emoji
+  const span = document.createElement("span");
+  span.innerText = currentEmoji;
+  span.style.position = "fixed";
+  span.style.left = e.clientX + "px";
+  span.style.top = e.clientY + "px";
+  span.style.pointerEvents = "none";
+  span.style.animation = "explode 0.6s ease forwards"; 
+  span.style.zIndex = 1000;
+  document.body.appendChild(span);
+  setTimeout(()=>span.remove(),600);
+  
+  // VERIFICA SE O ELEMENTO CLICADO É INTERATIVO E TOCA O SOM
+  const target = e.target;
+  const isInteractive = target.closest('.btn, .btn-select, .btn-linktree, .close') || target.tagName === 'A' || target.classList.contains('theme-option') || target.classList.contains('emoji-option');
+  
+  if (isInteractive) {
+      playClickSound();
+  }
+});
+
+
+// ... Restante do código (Métricas, ADM Selectors, Inicialização) ...
+
+const COUNTER_DOC_REF = { db: null, collection: 'site_metrics', docId: 'access_count' };
 async function handleAccessCounter() {
     if (!window.db) return;
     COUNTER_DOC_REF.db = window.db;
@@ -599,43 +745,18 @@ async function handleAccessCounter() {
     }
 }
 
-// ----------------------------------------------------
-// 3. LÓGICA DE INTERFACE E UTILITÁRIOS
-// ----------------------------------------------------
-
-function openModal(id) {
-    document.getElementById(id).style.display = "block";
-}
-
-function closeModal(id) {
-    document.getElementById(id).style.display = "none";
-}
-
-function handleWhatsClick(e) {
-  e.preventDefault(); 
-  
-  showToast("Encaminhando para o WhatsApp. Aviso de Bot ativado.", 'whatsapp');
-  
-  playClickSound();
-
-  setTimeout(() => {
-    window.open("https://api.whatsapp.com/send?phone=5531999999999&text=Ol%C3%A1!%20Gostaria%20de%20falar%20sobre%20suporte%20ou%20parceria%20no%20Cemiteryal%20Death%20Carneficine.", '_blank');
-  }, 300);
-}
-
-
 function generateAdmSelectors() {
     const list = document.getElementById("admList");
     let html = '';
-    
     admData.forEach(adm => {
         html += `
             <div class="adm-selector">
                 <strong>${adm.name}</strong>: 
                 <div>
         `;
+        // NOVO: Som de clique adicionado nas opções de emoji
         adm.emojis.forEach(emoji => {
-            html += `<span class="emoji-option" onclick="selectEmoji('${emoji}')">${emoji}</span>`;
+            html += `<span class="emoji-option" onclick="selectEmoji('${emoji}'); playClickSound();">${emoji}</span>`;
         });
         html += `
                 </div>
@@ -647,6 +768,7 @@ function generateAdmSelectors() {
 }
 
 function selectEmoji(newEmoji) {
+    // playClickSound() é chamado no HTML
     currentEmoji = newEmoji;
     localStorage.setItem('cemiteryal_emoji', newEmoji); 
     
@@ -658,39 +780,15 @@ function selectEmoji(newEmoji) {
     showToast(`Emoji ${newEmoji} selecionado com sucesso!`, 'success');
 }
 
-
 function initializeEmoji() {
     setTheme(currentTheme); 
-    
     const display = document.getElementById("currentEmojiDisplay");
     if (display) {
         display.innerText = currentEmoji;
     }
-
     const cursorUrl = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" style="font-size: 20px;"><text y="20">${currentEmoji}</text></svg>') 12 12, auto`;
     document.body.style.cursor = cursorUrl;
 }
-
-// Funções para áudio e clique
-document.addEventListener("click", e => {
-  clicks++;
-  const span = document.createElement("span");
-  span.innerText = currentEmoji;
-  span.style.position = "fixed";
-  span.style.left = e.clientX + "px";
-  span.style.top = e.clientY + "px";
-  span.style.pointerEvents = "none";
-  span.style.animation = "explode 0.6s ease forwards";
-  span.style.zIndex = 1000;
-  document.body.appendChild(span);
-  setTimeout(()=>span.remove(),600);
-  
-  const target = e.target.closest('.btn, .btn-select');
-  if (target) {
-      playClickSound();
-  }
-});
-
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', () => {
