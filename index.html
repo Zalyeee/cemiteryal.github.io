@@ -593,7 +593,7 @@ async function registerUser() {
         showToast(`Cadastro de ${userName} realizado! Redirecionando...`, 'success');
         
         // Atraso para garantir a sincronização antes de abrir o chat
-        await new Promise(resolve => setTimeout(resolve, 500)); 
+        await new Promise(resolve => setTimeout(resolve, 1000)); 
         window.open('./chat.html', '_blank');
 
     } catch (error) {
