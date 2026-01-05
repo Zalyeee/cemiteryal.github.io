@@ -122,7 +122,7 @@ h1 {
 }
 
 /* CARDS, SEÇÕES, MODAL (EFEITO VIDRO E BRILHO) */
-.card, .support, .secret, .modal-content, #unavailableModal .modal-content {
+.card, .support, .secret, .modal-content, #error404Modal .modal-content {
   background: var(--theme-glass-bg);
   backdrop-filter: blur(16px);
   border-radius: 20px;
@@ -135,15 +135,20 @@ h1 {
 .card {
   text-align: center;
 }
+/* CORREÇÃO DO CSS DA FOTO (GARANTINDO O CORTE CIRCULAR) */
 .card img {
-    width: 100%;
-    max-width: 150px;
-    height: auto;
-    border-radius: 50%; /* Imagem redonda */
-    object-fit: cover;
+    width: 150px; /* Tamanho fixo para garantir o círculo */
+    height: 150px; /* Tamanho fixo para garantir o círculo */
+    max-width: none;
+    border-radius: 50%; 
+    object-fit: cover; /* ESSENCIAL: Garante que a imagem preencha o círculo sem distorção */
     margin-bottom: 15px;
     border: 3px solid var(--theme-highlight);
     box-shadow: 0 0 10px var(--theme-highlight);
+    display: block; 
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden; 
 }
 /* Linktree Button Style */
 .btn-linktree {
@@ -306,7 +311,8 @@ h1 {
 
 <body data-theme="dark">
 
-<nav onclick="playClickSound()"> <div>🕯️ <strong>Cemiteryal</strong></div>
+<nav onclick="playClickSound()">
+  <div>🕯️ <strong>Cemiteryal</strong></div>
   <div>
     <a href="#inicio">Início</a>
     <a href="#admins">ADMs</a>
@@ -435,12 +441,12 @@ h1 {
   </div>
 </div>
 
-<div id="unavailableModal" class="modal">
+<div id="error404Modal" class="modal">
   <div class="modal-content">
-    <span class="close" onclick="closeModal('unavailableModal')">&times;</span>
-    <h3>❌ Link Indisponível</h3>
-    <p>O Linktree para este ADM ainda não está disponível.</p>
-    <button class="btn" onclick="closeModal('unavailableModal')" style="margin-top: 5px;">Entendido</button>
+    <span class="close" onclick="closeModal('error404Modal')">&times;</span>
+    <h3>⚠️ Erro 404</h3>
+    <p>O Linktree para este ADM ainda não foi configurado.</p>
+    <button class="btn" onclick="closeModal('error404Modal')" style="margin-top: 5px;">Entendido</button>
   </div>
 </div>
 
@@ -487,15 +493,15 @@ const clickSound = document.getElementById("clickSound");
 let toastTimeout;
 
 const admData = [
-    { name: "𝐙alye", emojis: ["🎻", "🪻"] },
-    { name: "𝐘𝚘𝚔𝚒𝚑𝚊𝚛𝚞", emojis: ["🍷"] },
-    { name: "𝐊𝚊𝚢𝚒𝚎", emojis: ["👽"] },
-    { name: "𝐊𝚢𝚘", emojis: ["🍂"] },
-    { name: "𝐒𝚘𝚖𝚊", emojis: ["🩸"] },
+    { name: "Isaac (ADM 1)", emojis: ["💀", "🔥", "😈"] },
+    { name: "Fernanda (ADM 2)", emojis: ["🔪", "🌹", "⛓️"] },
+    { name: "Rafael (ADM 3)", emojis: ["🌑", "⚡", "🕸️"] },
+    { name: "Mariana (ADM 4)", emojis: ["🩸", "🦄", "💔"] },
+    { name: "Gustavo (ADM 5)", emojis: ["👽", "✨", "💡"] },
 ];
 
 // ----------------------------------------------------
-// LÓGICA DE ÁUDIO (Música removida, som de clique ajustado)
+// LÓGICA DE ÁUDIO
 // ----------------------------------------------------
 
 function playClickSound() {
@@ -515,7 +521,7 @@ function usernameToEmail(username) {
 }
 
 function openLoginFlow() {
-    playClickSound(); // Toca o som ao abrir o fluxo
+    playClickSound(); 
     if (isRegistered) {
         openModal('modalLogin'); 
     } else {
@@ -524,13 +530,12 @@ function openLoginFlow() {
 }
 
 function openSecretModal() {
-    playClickSound(); // Toca o som ao abrir o modal secreto
+    playClickSound();
     closeModal('modalLogin');
     openModal('modalSecret');
 }
 
 function checkSecretKey() {
-    // playClickSound() será chamado pelo evento global no botão
     const pass = document.getElementById("secretKey").value;
     closeModal('modalSecret'); 
 
@@ -545,7 +550,6 @@ function checkSecretKey() {
 }
 
 async function registerUser() {
-    // playClickSound() será chamado pelo evento global no botão
     const user = document.getElementById("regUser").value.trim();
     const pass = document.getElementById("regPass").value;
 
@@ -581,8 +585,8 @@ async function registerUser() {
     }
 }
 
+// CORREÇÃO: Garante que o username é salvo no localStorage após o login
 async function signInUser() {
-    // playClickSound() será chamado pelo evento global no botão
     const user = document.getElementById("loginUser").value.trim();
     const pass = document.getElementById("loginPass").value;
 
@@ -598,6 +602,7 @@ async function signInUser() {
         await window.auth_signIn(window.auth, email, pass);
         
         userName = user;
+        // ESSENCIAL PARA O CHAT FUNCIONAR
         localStorage.setItem('cemiteryal_username', userName);
         
         showToast(`Bem-vindo, ${userName}! Redirecionando...`, 'success');
@@ -613,27 +618,25 @@ async function signInUser() {
 
 
 // ----------------------------------------------------
-// LÓGICA DE LINKTREE
+// LÓGICA DE LINKTREE (ATUALIZADA PARA ERRO 404)
 // ----------------------------------------------------
 
 function checkLink(e, linkUrl) {
     e.preventDefault(); 
     
-    // playClickSound() será chamado pelo evento global no botão
-    
     if (!linkUrl || linkUrl.trim() === '') {
-        openModal('unavailableModal');
+        // Se estiver vazio, abre o novo pop-up de Erro 404
+        openModal('error404Modal');
     } else {
         window.open(linkUrl, '_blank');
     }
 }
 
 // ----------------------------------------------------
-// UTILITÁRIOS (Temas, Métrica, Modais, etc.)
+// UTILITÁRIOS (Temas, Métrica, Modais, Emojis)
 // ----------------------------------------------------
 
 function setTheme(themeName) {
-    // playClickSound() é chamado diretamente no HTML
     document.body.setAttribute('data-theme', themeName);
     localStorage.setItem('cemiteryal_theme', themeName);
     
@@ -673,13 +676,11 @@ function openModal(id) {
 }
 
 function closeModal(id) {
-    // playClickSound() será chamado pelo evento global no botão/close
     document.getElementById(id).style.display = "none";
 }
 
 function handleWhatsClick(e) {
   e.preventDefault(); 
-  // playClickSound() será chamado pelo evento global no botão
   
   showToast("Encaminhando para o WhatsApp. Aviso de Bot ativado.", 'whatsapp');
   
@@ -689,10 +690,7 @@ function handleWhatsClick(e) {
 }
 
 
-// ----------------------------------------------------
 // ADIÇÃO DE SOM DE CLIQUE EM TODOS OS BOTÕES E LINKS
-// ----------------------------------------------------
-
 document.addEventListener("click", e => {
   // Lógica de explosão de emoji
   const span = document.createElement("span");
@@ -706,7 +704,7 @@ document.addEventListener("click", e => {
   document.body.appendChild(span);
   setTimeout(()=>span.remove(),600);
   
-  // VERIFICA SE O ELEMENTO CLICADO É INTERATIVO E TOCA O SOM
+  // Toca o som de clique
   const target = e.target;
   const isInteractive = target.closest('.btn, .btn-select, .btn-linktree, .close') || target.tagName === 'A' || target.classList.contains('theme-option') || target.classList.contains('emoji-option');
   
@@ -714,9 +712,6 @@ document.addEventListener("click", e => {
       playClickSound();
   }
 });
-
-
-// ... Restante do código (Métricas, ADM Selectors, Inicialização) ...
 
 const COUNTER_DOC_REF = { db: null, collection: 'site_metrics', docId: 'access_count' };
 async function handleAccessCounter() {
@@ -754,7 +749,6 @@ function generateAdmSelectors() {
                 <strong>${adm.name}</strong>: 
                 <div>
         `;
-        // NOVO: Som de clique adicionado nas opções de emoji
         adm.emojis.forEach(emoji => {
             html += `<span class="emoji-option" onclick="selectEmoji('${emoji}'); playClickSound();">${emoji}</span>`;
         });
@@ -768,7 +762,6 @@ function generateAdmSelectors() {
 }
 
 function selectEmoji(newEmoji) {
-    // playClickSound() é chamado no HTML
     currentEmoji = newEmoji;
     localStorage.setItem('cemiteryal_emoji', newEmoji); 
     
