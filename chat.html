@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔒 Cemiteryal Chat Secreto</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <style>
+        /* *****************************************************************
+         * 1. VARIÁVEIS DE TEMA (Lidas do localStorage do index.html)
+         ***************************************************************** */
+        :root, [data-theme="dark"] {
+            --theme-background: #1a1a1a;
+            --theme-primary: #fff;
+            --theme-highlight: #00ffd5; /* Ciano/Verde */
+            --theme-secondary: #00bfff;
+            --theme-chat-bg: #0d0d0d;
+            --theme-message-bg: rgba(0, 255, 213, 0.1);
+            --theme-message-border: rgba(0, 255, 213, 0.3);
+            --theme-input-bg: rgba(255, 255, 255, 0.9);
+            --theme-input-text: #000;
+        }
+        [data-theme="red"] {
+            --theme-background: #000000;
+            --theme-primary: #fff;
+            --theme-highlight: #ff4d4d; /* Vermelho Vivo */
+            --theme-secondary: #cc0000;
+            --theme-chat-bg: #110000;
+            --theme-message-bg: rgba(255, 77, 77, 0.1);
+            --theme-message-border: rgba(255, 77, 77, 0.3);
+            --theme-input-bg: rgba(255, 255, 255, 0.9);
+            --theme-input-text: #000;
+        }
+        [data-theme="light"] {
+            --theme-background: #ffffff;
+            --theme-primary: #000;
+            --theme-highlight: #3333ff; /* Azul Escuro */
+            --theme-secondary: #6666ff;
+            --theme-chat-bg: #f5f5f5;
+            --theme-message-bg: rgba(51, 51, 255, 0.1);
+            --theme-message-border: rgba(51, 51, 255, 0.3);
+            --theme-input-bg: rgba(255, 255, 255, 1);
+            --theme-input-text: #000;
+        }
+
+
+        /* *****************************************************************
+         * 2. ESTILOS BÁSICOS DO CHAT
+         ***************************************************************** */
+        * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        body {
+            background: var(--theme-background);
+            color: var(--theme-primary);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .chat-container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--theme-chat-bg);
+            border: 2px solid var(--theme-highlight);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 0 25px var(--theme-highlight);
+        }
+        
+        h2 { text-align: center; color: var(--theme-highlight); }
+
+        #chatWindow {
+            flex-grow: 1;
+            overflow-y: scroll;
+            border: 1px solid var(--theme-message-border);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            text-align: left;
+            background: rgba(0,0,0,0.5);
+            /* Esconde a barra de rolagem */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        #chatWindow::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chat-message {
+            margin-bottom: 8px;
+            padding: 5px 8px;
+            border-radius: 5px;
+            background: var(--theme-message-bg);
+            word-wrap: break-word;
+            font-size: 0.9rem;
+            border-left: 3px solid var(--theme-highlight);
+        }
+        .chat-message strong {
+            color: var(--theme-highlight);
+        }
+        
+        /* Estilização para a imagem (quando o link for colado) */
+        .chat-message img {
+            max-width: 100%;
+            max-height: 250px;
+            display: block;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid var(--theme-message-border);
+        }
+        
+        /* INPUT E BOTÃO DE ENVIO */
+        .input-area {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        #chatInput {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            background-color: var(--theme-input-bg);
+            color: var(--theme-input-text);
+        }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: linear-gradient(45deg, var(--theme-highlight), var(--theme-secondary));
+            color: var(--theme-input-text);
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px rgba(0,255,200,0.45);
+            transition: 0.3s;
+        }
+        
+        /* Estilo para o botão Sair/Logout */
+        #statusInfo .btn {
+            background: var(--theme-secondary);
+            color: var(--theme-primary);
+            box-shadow: none;
+            border: 1px solid var(--theme-highlight);
+        }
+    </style>
+</head>
+
+<body data-theme="dark">
+
+    <div class="chat-container">
+        <h2>🔒 Cemiteryal Chat Secreto</h2>
+        
+        <div id="statusInfo" style="text-align: center; margin-bottom: 15px; font-size: 0.85rem; color: #aaa;">
+            <p>Conectado como: <strong id="userNameDisplay">Carregando...</strong></p>
+            <button class="btn" onclick="logout()" style="margin-top: 5px;">Sair do Chat & Logout</button>
+        </div>
+
+        <div id="chatWindow">
+            <p style="color: yellow;">Aguardando mensagens...</p>
+        </div>
+
+        <div class="input-area">
+            <input type="text" id="chatInput" placeholder="Digite sua mensagem ou cole o link de uma imagem (JPG, PNG, GIF)...">
+            <button class="btn" onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
+    
+<script type="module">
+  // Configuração e inicialização do Firebase (MESMA DO index.html)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAsHXQr5k3HviBVEFPz918g_zcjUZdFpJY",
+    authDomain: "cemiteryal-site.firebaseapp.com",
+    projectId: "cemiteryal-site",
+    storageBucket: "cemiteryal-site.firebasestorage.app",
+    messagingSenderId: "935123054222",
+    appId: "1:935123054222:web:f720f6ae514631dd94a3df"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  window.db = getFirestore(app);
+  window.collection = collection;
+  window.addDoc = addDoc;
+  window.query = query;
+  window.orderBy = orderBy;
+  window.onSnapshot = onSnapshot;
+  window.serverTimestamp = serverTimestamp;
+</script>
+
+<script>
+    // Variáveis (Carregadas do localStorage do site principal)
+    let userName = localStorage.getItem('cemiteryal_username');
+    let currentEmoji = localStorage.getItem('cemiteryal_emoji') || "🕯️"; 
+    let currentTheme = localStorage.getItem('cemiteryal_theme') || "dark"; 
+
+    // ----------------------------------------------------
+    // INICIALIZAÇÃO E TEMA
+    // ----------------------------------------------------
+
+    function initializeChat() {
+        // Aplica o tema salvo no <body>
+        document.body.setAttribute('data-theme', currentTheme);
+        
+        // Checagem de segurança
+        if (!userName) {
+            alert("Sessão expirada ou Login necessário. Fechando chat.");
+            // Redireciona para o index para fazer login novamente
+            window.opener.location.href = './index.html#secreto';
+            window.close(); 
+            return;
+        } 
+        
+        // Exibe o nome e emoji
+        document.getElementById('userNameDisplay').innerText = `${currentEmoji} ${userName}`;
+        
+        // Inicia o carregamento das mensagens
+        if (window.db) {
+            loadMessages();
+        } else {
+            console.error("Firebase DB não inicializado.");
+        }
+    }
+
+    // ----------------------------------------------------
+    // LÓGICA DE CHAT
+    // ----------------------------------------------------
+    
+    // Expressão regular para detectar URLs de imagens
+    const IMAGE_REGEX = /(https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|svg))/i;
+
+    async function sendMessage() {
+        const chatInput = document.getElementById("chatInput");
+        const message = chatInput.value.trim();
+        
+        if (!message || !userName || !window.db || message.length > 500) return;
+
+        try {
+            await window.addDoc(window.collection(window.db, "chat_cemiteryal"), {
+                user: userName,
+                text: message,
+                emoji: currentEmoji,
+                timestamp: window.serverTimestamp()
+            });
+
+            chatInput.value = '';
+            chatInput.focus();
+        } catch (e) {
+            console.error("Erro ao enviar mensagem:", e);
+        }
+    }
+
+    function loadMessages() {
+        const chatWindow = document.getElementById("chatWindow");
+        
+        const q = window.query(window.collection(window.db, "chat_cemiteryal"), window.orderBy("timestamp", "asc"));
+
+        window.onSnapshot(q, (snapshot) => {
+            let messagesHtml = '';
+            // Checa se já está rolado para o final antes de adicionar a mensagem
+            let shouldScroll = chatWindow.scrollHeight - chatWindow.scrollTop <= chatWindow.clientHeight + 10;
+
+            snapshot.docChanges().forEach((change) => {
+                if (change.type === "added") {
+                    const msg = change.doc.data();
+                    const formattedTime = msg.timestamp ? new Date(msg.timestamp.seconds * 1000).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '...';
+                    
+                    let text = msg.text;
+                    let imageHtml = '';
+
+                    // NOVO: Renderiza a URL da imagem como <img> se ela for um link direto
+                    const match = text.match(IMAGE_REGEX);
+                    if (match) {
+                        const imageUrl = match[0];
+                        // Renderiza a imagem, e o resto da mensagem se houver
+                        imageHtml = `<img src="${imageUrl}" alt="Imagem do Chat" onclick="window.open(this.src, '_blank')">`;
+                        // Remove a URL da imagem do texto principal se ela for a única coisa na mensagem
+                        if (text.trim() === imageUrl) {
+                            text = ''; 
+                        } else {
+                            // Se tiver texto antes ou depois, mantemos o texto e a imagem
+                        }
+                    }
+
+                    messagesHtml += `
+                        <div class="chat-message">
+                            ${msg.emoji} <strong>${msg.user}</strong> <span style="font-size: 0.7em; opacity: 0.6;">(${formattedTime})</span>: 
+                            ${text.trim()}
+                            ${imageHtml}
+                        </div>
+                    `;
+                }
+            });
+            chatWindow.innerHTML += messagesHtml;
+            
+            // Garante que a rolagem vá para o final se já estava no final ou se é a primeira mensagem
+            if (shouldScroll) {
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            }
+        });
+    }
+
+    // Lógica para envio de mensagem ao pressionar Enter
+    document.getElementById('chatInput').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // Impede quebra de linha padrão
+            sendMessage();
+        }
+    });
+    
+    // ----------------------------------------------------
+    // LÓGICA DE LOGOUT
+    // ----------------------------------------------------
+
+    function logout() {
+        // Limpa a sessão do ADM
+        localStorage.removeItem('cemiteryal_username');
+        
+        // Se a página principal estiver aberta, avisa o usuário
+        if (window.opener) {
+            alert("Você saiu da Área Secreta. A página principal será recarregada para refletir o logout.");
+            // Tenta recarregar a página principal
+            window.opener.location.reload(); 
+        }
+        
+        // Fecha a aba do chat
+        window.close();
+    }
+
+    // ----------------------------------------------------
+    // INÍCIO
+    // ----------------------------------------------------
+    document.addEventListener('DOMContentLoaded', initializeChat);
+
+</script>
+
+</body>
+</html>
