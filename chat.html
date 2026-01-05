@@ -85,7 +85,6 @@
             margin-bottom: 10px;
             text-align: left;
             background: rgba(0,0,0,0.5);
-            /* Esconde a barra de rolagem */
             scrollbar-width: none;
             -ms-overflow-style: none;
         }
@@ -106,7 +105,7 @@
             color: var(--theme-highlight);
         }
         
-        /* Estilização para a imagem (quando o link for colado) */
+        /* Estilização para a imagem (enviada por URL) */
         .chat-message img {
             max-width: 100%;
             max-height: 250px;
@@ -114,6 +113,7 @@
             margin-top: 5px;
             border-radius: 5px;
             border: 1px solid var(--theme-message-border);
+            cursor: zoom-in; /* Indica que é clicável */
         }
         
         /* INPUT E BOTÃO DE ENVIO */
@@ -175,9 +175,10 @@
     </div>
     
 <script type="module">
-  // Configuração e inicialização do Firebase (MESMA DO index.html)
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
   import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+  // IMPORTANTE: Importa o módulo de Autenticação
+  import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAsHXQr5k3HviBVEFPz918g_zcjUZdFpJY",
@@ -190,6 +191,11 @@
 
   const app = initializeApp(firebaseConfig);
   window.db = getFirestore(app);
+  // Inicializa e exporta o Auth
+  window.auth = getAuth(app); 
+  window.auth_signOut = signOut;
+
+  // Exporta funções do Firestore para uso no JS
   window.collection = collection;
   window.addDoc = addDoc;
   window.query = query;
@@ -215,8 +221,14 @@
         // Checagem de segurança
         if (!userName) {
             alert("Sessão expirada ou Login necessário. Fechando chat.");
-            // Redireciona para o index para fazer login novamente
-            window.opener.location.href = './index.html#secreto';
+            // Tenta avisar a janela principal e fechar
+            try {
+                if (window.opener) {
+                    window.opener.location.href = './index.html#secreto';
+                }
+            } catch (e) {
+                console.log("Não foi possível acessar a janela principal.");
+            }
             window.close(); 
             return;
         } 
@@ -233,7 +245,7 @@
     }
 
     // ----------------------------------------------------
-    // LÓGICA DE CHAT
+    // LÓGICA DE CHAT (Inclui Suporte a Imagens)
     // ----------------------------------------------------
     
     // Expressão regular para detectar URLs de imagens
@@ -278,7 +290,7 @@
                     let text = msg.text;
                     let imageHtml = '';
 
-                    // NOVO: Renderiza a URL da imagem como <img> se ela for um link direto
+                    // LÓGICA DE RENDERIZAÇÃO DE IMAGEM
                     const match = text.match(IMAGE_REGEX);
                     if (match) {
                         const imageUrl = match[0];
@@ -313,27 +325,39 @@
     // Lógica para envio de mensagem ao pressionar Enter
     document.getElementById('chatInput').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
-            e.preventDefault(); // Impede quebra de linha padrão
+            e.preventDefault(); 
             sendMessage();
         }
     });
     
     // ----------------------------------------------------
-    // LÓGICA DE LOGOUT
+    // LÓGICA DE LOGOUT (AGORA COM FIREBASE AUTH)
     // ----------------------------------------------------
 
-    function logout() {
-        // Limpa a sessão do ADM
+    async function logout() {
+        // 1. Tenta fazer o Sign Out do Firebase
+        try {
+            if (window.auth && window.auth_signOut) {
+                await window.auth_signOut(window.auth);
+            }
+        } catch (e) {
+            console.error("Erro ao deslogar do Firebase:", e);
+        }
+
+        // 2. Limpa dados locais
         localStorage.removeItem('cemiteryal_username');
+        // Mantemos 'cemiteryal_registered' para o próximo login ir direto para o modal de login.
         
-        // Se a página principal estiver aberta, avisa o usuário
+        // 3. Avisa a janela principal e fecha
         if (window.opener) {
-            alert("Você saiu da Área Secreta. A página principal será recarregada para refletir o logout.");
-            // Tenta recarregar a página principal
-            window.opener.location.reload(); 
+            alert("Você saiu da Área Secreta. A página principal será recarregada.");
+            try {
+                 window.opener.location.reload(); 
+            } catch (e) {
+                 console.log("Não foi possível recarregar a janela principal.");
+            }
         }
         
-        // Fecha a aba do chat
         window.close();
     }
 
@@ -345,4 +369,4 @@
 </script>
 
 </body>
-</html>
+                </html>
