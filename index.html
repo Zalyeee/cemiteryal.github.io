@@ -9,8 +9,7 @@
 
 <style>
 /* *****************************************************************
- * 1. VARIÁVEIS DE TEMA (APLICADAS AO HTML PARA ACESSO GLOBAL)
- * O tema padrão é DARK.
+ * 1. VARIÁVEIS DE TEMA
  ***************************************************************** */
 :root, [data-theme="dark"] {
     --theme-background: #1a1a1a;
@@ -21,6 +20,7 @@
     --theme-glass-border: rgba(255,255,255,0.18);
     --theme-glass-shadow: rgba(0,255,180,0.18);
     --theme-whatsapp-color: #25d366;
+    --theme-input-text: #000;
 }
 [data-theme="red"] {
     --theme-background: #000000;
@@ -30,7 +30,8 @@
     --theme-glass-bg: rgba(255,77,77,0.08);
     --theme-glass-border: rgba(255,77,77,0.18);
     --theme-glass-shadow: rgba(255,77,77,0.35);
-    --theme-whatsapp-color: #f00; /* Simula cor do WhatsApp */
+    --theme-whatsapp-color: #f00; 
+    --theme-input-text: #000;
 }
 [data-theme="light"] {
     --theme-background: #ffffff;
@@ -41,17 +42,17 @@
     --theme-glass-border: rgba(0,0,0,0.18);
     --theme-glass-shadow: rgba(51,51,255,0.18);
     --theme-whatsapp-color: #3333ff;
+    --theme-input-text: #000;
 }
 
 /* *****************************************************************
- * 2. ESTILOS GLOBAIS COM VARIÁVEIS
+ * 2. ESTILOS GLOBAIS COM VARIÁVEIS (DECORAÇÕES RESTAURADAS)
  ***************************************************************** */
 * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
 
 body {
   margin: 0;
   min-height: 100vh;
-  /* Aplica o fundo e cor primária das variáveis */
   background: var(--theme-background); 
   color: var(--theme-primary);
   overflow-x: hidden;
@@ -64,50 +65,179 @@ body::before {
   position: fixed;
   inset: 0;
   background:
-    /* Gradientes usam variáveis */
     radial-gradient(circle at 20% 20%, var(--theme-highlight), transparent 40%),
     radial-gradient(circle at 80% 60%, var(--theme-secondary), transparent 40%);
   animation: bgmove 12s infinite alternate;
-  opacity: var(--theme-glass-shadow); /* Opacidade controlada pela sombra */
+  opacity: 0.6;
   z-index: -1;
 }
 
-/* MENU */
+@keyframes bgmove {
+  from { transform: translateY(0); }
+  to { transform: translateY(-40px); }
+}
+
 nav {
-  /* ... (Mantido, mas ajustado para cores dinâmicas) ... */
-  color: var(--theme-primary);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 14px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  z-index: 999;
 }
 
 nav a {
   color: var(--theme-primary);
+  margin-left: 18px;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: 0.3s;
 }
 
 nav a:hover { color: var(--theme-whatsapp-color); }
+
+.container {
+  max-width: 1100px;
+  margin: 110px auto 60px;
+  padding: 20px;
+}
 
 /* TITULO */
 h1 {
   text-align: center;
   letter-spacing: 1px;
-  /* Sombra usa cor de destaque */
   text-shadow: 0 0 15px var(--theme-highlight); 
 }
 
-/* CARDS (EFEITO VIDRO) */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px,1fr));
+  gap: 22px;
+  margin-top: 40px;
+}
+
+/* CARDS, SEÇÕES, MODAL (EFEITO VIDRO E BRILHO RESTAURADO) */
 .card, .support, .secret, .modal-content {
   background: var(--theme-glass-bg);
   backdrop-filter: blur(16px);
   border-radius: 20px;
+  padding: 22px; 
   border: 1px solid var(--theme-glass-border);
-  /* Sombra usa cor de destaque */
   box-shadow: 0 0 25px var(--theme-glass-shadow), inset 0 0 15px rgba(255,255,255,0.06); 
   transition: 0.35s;
 }
 
+.card {
+  text-align: center;
+}
+
+/* Campos de INPUT */
+.modal-content input[type="text"], .modal-content input[type="password"] {
+    padding: 10px;
+    margin: 8px 0;
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--theme-highlight);
+    background-color: var(--theme-primary);
+    color: var(--theme-input-text);
+    outline: none;
+    transition: 0.3s;
+}
+
 .btn {
-  /* ... (Mantido) ... */
+  display: inline-block;
+  margin-top: 18px;
+  padding: 13px 30px;
+  border-radius: 30px;
   background: linear-gradient(45deg, var(--theme-highlight), var(--theme-secondary));
-  color: var(--theme-background); /* Cor do texto no botão é a cor do fundo */
+  color: var(--theme-background);
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
   box-shadow: 0 0 25px var(--theme-highlight);
+  transition: 0.3s;
+}
+.btn-select {
+  padding: 5px 10px;
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+/* ESTILOS DE NOTIFICAÇÃO (TOAST) */
+#toastNotification {
+  visibility: hidden;
+  min-width: 250px;
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  border-radius: 12px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1000;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 30px;
+  font-size: 1rem;
+  border: 1px solid var(--theme-highlight);
+  box-shadow: 0 0 20px var(--theme-highlight);
+  transition: opacity 0.3s, bottom 0.3s;
+}
+
+#toastNotification.show {
+  visibility: visible;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;} 
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadeout {
+  from {opacity: 1;} 
+  to {opacity: 0;}
+}
+
+/* ESTILOS DE MODAL */
+.modal {
+  display: none; 
+  position: fixed;
+  z-index: 1001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.8);
+  backdrop-filter: blur(5px);
+  padding-top: 60px;
+}
+
+.modal-content {
+  margin: 5% auto;
+  width: 80%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: var(--theme-highlight);
+  text-decoration: none;
+  cursor: pointer;
 }
 
 /* SELEÇÃO DE TEMAS */
@@ -132,15 +262,15 @@ h1 {
     box-shadow: 0 0 10px var(--theme-highlight);
 }
 
-/* Definições de cores fixas para os círculos */
 #theme-dark { background-color: #1a1a1a; }
 #theme-red { background-color: #ff4d4d; }
 #theme-light { background-color: #ffffff; border: 2px solid #ccc; }
-
 </style>
 </head>
 
-<body data-theme="dark"> <nav>
+<body data-theme="dark">
+
+<nav>
   <div>🕯️ <strong>Cemiteryal</strong></div>
   <div>
     <a href="#inicio">Início</a>
@@ -157,10 +287,11 @@ h1 {
 <h1>Cemiteryal Death Carneficine</h1>
 
 <section id="admins" class="cards">
-  <div class="card"><img src="https://via.placeholder.com/150"><h3>ADM 1</h3><div class="unavailable">Link indisponível</div></div>
-  <div class="card"><img src="https://via.placeholder.com/150"><h3>ADM 2</h3><div class="unavailable">Link indisponível</div></div>
-  <div class="card"><img src="https://via.placeholder.com/150"><h3>ADM 3</h3><div class="unavailable">Link indisponível</div></div>
-  <div class="card"><img src="https://via.placeholder.com/150"><h3>ADM 4</h3><div class="unavailable">Link indisponível</div></div>
+  <div class="card"><img src="https://via.placeholder.com/150"><h3>Isaac (ADM 1)</h3><div class="unavailable">Link indisponível</div></div>
+  <div class="card"><img src="https://via.placeholder.com/150"><h3>Fernanda (ADM 2)</h3><div class="unavailable">Link indisponível</div></div>
+  <div class="card"><img src="https://via.placeholder.com/150"><h3>Rafael (ADM 3)</h3><div class="unavailable">Link indisponível</div></div>
+  <div class="card"><img src="https://via.placeholder.com/150"><h3>Mariana (ADM 4)</h3><div class="unavailable">Link indisponível</div></div>
+  <div class="card"><img src="https://via.placeholder.com/150"><h3>Gustavo (ADM 5)</h3><div class="unavailable">Link indisponível</div></div> 
 </section>
 
 <div class="support">
@@ -201,7 +332,7 @@ h1 {
 
 <section id="secreto" class="secret">
   <h3>🔒 Área Secreta</h3>
-  <button class="btn" onclick="openLoginModal()">Login de ADM</button>
+  <button class="btn" onclick="openLoginFlow()">Login de ADM</button>
 </section>
 
 <footer>
@@ -214,16 +345,43 @@ h1 {
 <div id="modalLogin" class="modal">
   <div class="modal-content">
     <span class="close" onclick="closeModal('modalLogin')">&times;</span>
-    <h3>🔑 Login de ADM</h3>
-    <input type="text" id="loginUser" placeholder="Usuário/Senha Padrão" style="width: 100%;" required>
-    <input type="password" id="loginPass" placeholder="Senha Secreta" style="width: 100%;" required>
-    <button class="btn" onclick="unlock()">Entrar</button>
+    <h3>🔑 Login Registrado</h3>
+    <input type="text" id="loginUser" placeholder="Seu Username" required>
+    <input type="password" id="loginPass" placeholder="Sua Senha" required>
+    <button class="btn" onclick="signInUser()">Entrar</button>
+    <p style="font-size: 0.8em; margin-top: 15px; cursor: pointer;" onclick="openSecretModal()">
+        <small>Tentativa com Chave Mestra?</small>
+    </p>
   </div>
 </div>
+
+<div id="modalSecret" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('modalSecret')">&times;</span>
+    <h3>🗝️ Chave Mestra</h3>
+    <p>Use a chave mestra APENAS para o primeiro acesso ou se esquecer a senha.</p>
+    <input type="password" id="secretKey" placeholder="Chave Mestra Secreta" required>
+    <button class="btn" onclick="checkSecretKey()">Prosseguir</button>
+  </div>
+</div>
+
+<div id="modalRegister" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('modalRegister')">&times;</span>
+    <h3>📝 Cadastro de ADM</h3>
+    <p style="color: #ff4d4d;">Crie seu login pessoal para futuros acessos.</p>
+    <input type="text" id="regUser" placeholder="Escolha um Username (será seu login)" required>
+    <input type="password" id="regPass" placeholder="Escolha uma Senha (mínimo 6 caracteres)" required>
+    <button class="btn" onclick="registerUser()">Cadastrar e Entrar</button>
+  </div>
+</div>
+
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
   import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, getDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+  // NOVO: Importa a Autenticação
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAsHXQr5k3HviBVEFPz918g_zcjUZdFpJY",
@@ -236,12 +394,8 @@ h1 {
 
   const app = initializeApp(firebaseConfig);
   window.db = getFirestore(app);
-  window.collection = collection;
-  window.addDoc = addDoc;
-  window.query = query;
-  window.orderBy = orderBy;
-  window.onSnapshot = onSnapshot;
-  window.serverTimestamp = serverTimestamp;
+  // NOVO: Inicializa a Autenticação
+  window.auth = getAuth(app); 
   
   // Expondo funções do Firestore para uso no JS
   window.firestore_doc = doc;
@@ -249,43 +403,52 @@ h1 {
   window.firestore_setDoc = setDoc;
   window.firestore_increment = increment;
 
+  // Expondo funções do Auth para uso no JS
+  window.auth_signIn = signInWithEmailAndPassword;
+  window.auth_createUser = createUserWithEmailAndPassword;
+  window.auth_signOut = signOut;
+  window.auth_onState = onAuthStateChanged;
+
 </script>
 
 <script>
 // Variáveis Globais
 let clicks = 0;
-// Carrega o tema e o emoji salvos no localStorage
 let currentTheme = localStorage.getItem('cemiteryal_theme') || "dark";
 let currentEmoji = localStorage.getItem('cemiteryal_emoji') || "🕯️"; 
+// O username agora será verificado no Auth
 let userName = localStorage.getItem('cemiteryal_username'); 
+let isRegistered = localStorage.getItem('cemiteryal_registered') === 'true';
 
 const clickSound = document.getElementById("clickSound");
 const backgroundMusic = document.getElementById("backgroundMusic");
 let hasStartedMusic = false;
 let toastTimeout;
 
+// CORREÇÃO: 5 ADMS na lista de emojis
 const admData = [
     { name: "Isaac (ADM 1)", emojis: ["💀", "🔥", "😈"] },
     { name: "Fernanda (ADM 2)", emojis: ["🔪", "🌹", "⛓️"] },
     { name: "Rafael (ADM 3)", emojis: ["🌑", "⚡", "🕸️"] },
     { name: "Mariana (ADM 4)", emojis: ["🩸", "🦄", "💔"] },
-    { name: "Você (Visitante)", emojis: ["👽", "✨", "💡"] },
+    { name: "Gustavo (ADM 5)", emojis: ["👽", "✨", "💡"] },
 ];
 
 // ----------------------------------------------------
-// 0. FUNÇÃO DE TEMA (NOVA E MELHORADA)
+// 0. FUNÇÃO DE TEMA
 // ----------------------------------------------------
 function setTheme(themeName) {
     document.body.setAttribute('data-theme', themeName);
     localStorage.setItem('cemiteryal_theme', themeName);
     
-    // Atualiza o estado visual dos botões
     document.querySelectorAll('.theme-option').forEach(btn => {
         btn.classList.remove('active');
     });
-    document.getElementById(`theme-${themeName}`).classList.add('active');
+    const targetButton = document.getElementById(`theme-${themeName}`);
+    if (targetButton) {
+        targetButton.classList.add('active');
+    }
 
-    // Notificação
     let message = `Tema ${themeName.toUpperCase()} aplicado com sucesso.`;
     if (themeName === 'red') message = '☠️ Tema Black & Red ativado!';
     showToast(message, 'success');
@@ -293,43 +456,173 @@ function setTheme(themeName) {
 
 
 // ----------------------------------------------------
-// 0. FUNÇÕES DE INTERAÇÃO E NOTIFICAÇÃO (Ajustadas)
+// 1. LÓGICA DE AUTENTICAÇÃO (NOVA)
 // ----------------------------------------------------
 
-function showToast(message, type = 'info') {
-    const toast = document.getElementById("toastNotification");
-    clearTimeout(toastTimeout); 
-
-    let icon = '';
-    if (type === 'success') icon = '✅ ';
-    if (type === 'error') icon = '❌ ';
-    if (type === 'warning') icon = '⚠️ ';
-    if (type === 'whatsapp') icon = '📱 ';
-
-    toast.innerHTML = icon + message;
-    toast.className = "show";
-
-    toastTimeout = setTimeout(() => {
-        toast.className = toast.className.replace("show", "");
-    }, 3000);
+// Função utilitária para transformar username em um "e-mail" para o Firebase Auth
+function usernameToEmail(username) {
+    // Transforma o nome em um email seguro para o Firebase
+    return `${username.toLowerCase().replace(/[^a-z0-9]/g, '')}@cemiteryal.chat`;
 }
 
-function playClickSound() {
-    if (clickSound) {
-        clickSound.currentTime = 0;
-        clickSound.play().catch(e => console.log("Erro ao tocar áudio (Bloqueado):", e));
-    }
-
-    if (backgroundMusic && !hasStartedMusic) {
-        backgroundMusic.volume = 0.4;
-        backgroundMusic.play().catch(e => console.log("Música de fundo bloqueada."));
-        hasStartedMusic = true;
+// 1. Abre o fluxo de login (decide entre o login rápido e a chave mestra)
+function openLoginFlow() {
+    if (isRegistered) {
+        // Se já tem cadastro, vai direto para o login com username/senha
+        openModal('modalLogin'); 
+    } else {
+        // Se não tem cadastro, precisa da chave mestra primeiro
+        openModal('modalSecret');
     }
 }
 
+function openSecretModal() {
+    closeModal('modalLogin');
+    openModal('modalSecret');
+}
+
+// 2. Verifica a Chave Mestra
+function checkSecretKey() {
+    const pass = document.getElementById("secretKey").value;
+    closeModal('modalSecret'); 
+
+    // A CHAVE MESTRA PADRÃO
+    if (pass === "isaacomebosta1010") {
+        showToast("Chave Mestra correta! Prossiga para o cadastro.", 'success');
+        openModal('modalRegister'); 
+    } else {
+        showToast("Chave Mestra incorreta. Tente novamente.", 'error');
+    }
+}
+
+// 3. Cadastra o Usuário (após a chave mestra)
+async function registerUser() {
+    const user = document.getElementById("regUser").value.trim();
+    const pass = document.getElementById("regPass").value;
+
+    if (!user || pass.length < 6) {
+        showToast("Username e senha (mín. 6 caracteres) são obrigatórios.", 'warning');
+        return;
+    }
+    
+    closeModal('modalRegister');
+    const email = usernameToEmail(user);
+
+    try {
+        const userCredential = await window.auth_createUser(window.auth, email, pass);
+        // Sucesso no cadastro:
+        userName = user;
+        localStorage.setItem('cemiteryal_username', userName);
+        localStorage.setItem('cemiteryal_registered', 'true');
+        isRegistered = true;
+
+        showToast(`Cadastro de ${userName} realizado! Redirecionando...`, 'success');
+        
+        setTimeout(() => {
+            window.open('./chat.html', '_blank');
+        }, 500);
+
+    } catch (error) {
+        // Código 'auth/email-already-in-use' significa que o username já foi usado
+        if (error.code === 'auth/email-already-in-use') {
+            showToast("Username já em uso! Tente fazer login ou escolha outro nome.", 'error');
+            openModal('modalLogin');
+        } else {
+            showToast(`Erro no cadastro: ${error.message}`, 'error');
+        }
+    }
+}
+
+// 4. Faz Login do Usuário Registrado
+async function signInUser() {
+    const user = document.getElementById("loginUser").value.trim();
+    const pass = document.getElementById("loginPass").value;
+
+    if (!user || !pass) {
+        showToast("Username e senha são obrigatórios.", 'warning');
+        return;
+    }
+    
+    closeModal('modalLogin');
+    const email = usernameToEmail(user);
+
+    try {
+        const userCredential = await window.auth_signIn(window.auth, email, pass);
+        // Sucesso no login:
+        userName = user;
+        localStorage.setItem('cemiteryal_username', userName);
+        
+        showToast(`Bem-vindo, ${userName}! Redirecionando...`, 'success');
+        
+        setTimeout(() => {
+            window.open('./chat.html', '_blank');
+        }, 500);
+
+    } catch (error) {
+        showToast("Login falhou. Verifique Username e Senha.", 'error');
+    }
+}
+
+
 // ----------------------------------------------------
-// 1. LÓGICA DE PERSONALIZAÇÃO (Mantida)
+// 2. LÓGICA DE MÉTICAS (Contador de Acessos)
 // ----------------------------------------------------
+const COUNTER_DOC_REF = {
+    db: null, 
+    collection: 'site_metrics',
+    docId: 'access_count'
+};
+
+async function handleAccessCounter() {
+    if (!window.db) return;
+    COUNTER_DOC_REF.db = window.db;
+
+    try {
+        const docRef = window.firestore_doc(COUNTER_DOC_REF.db, COUNTER_DOC_REF.collection, COUNTER_DOC_REF.docId);
+        
+        if (!sessionStorage.getItem('visited')) {
+            await window.firestore_setDoc(docRef, { count: window.firestore_increment(1) }, { merge: true });
+            sessionStorage.setItem('visited', 'true');
+        }
+        
+        const docSnap = await window.firestore_getDoc(docRef);
+        if (docSnap.exists()) {
+            const count = docSnap.data().count;
+            document.getElementById('totalAccesses').innerText = count.toLocaleString('pt-BR');
+        } else {
+            document.getElementById('totalAccesses').innerText = '0 (Iniciando Contador)';
+        }
+
+    } catch(error) {
+        console.error("Erro no contador de acessos:", error);
+        document.getElementById('totalAccesses').innerText = 'Erro ao carregar';
+    }
+}
+
+// ----------------------------------------------------
+// 3. LÓGICA DE INTERFACE E UTILITÁRIOS
+// ----------------------------------------------------
+
+function openModal(id) {
+    document.getElementById(id).style.display = "block";
+}
+
+function closeModal(id) {
+    document.getElementById(id).style.display = "none";
+}
+
+function handleWhatsClick(e) {
+  e.preventDefault(); 
+  
+  showToast("Encaminhando para o WhatsApp. Aviso de Bot ativado.", 'whatsapp');
+  
+  playClickSound();
+
+  setTimeout(() => {
+    window.open("https://api.whatsapp.com/send?phone=5531999999999&text=Ol%C3%A1!%20Gostaria%20de%20falar%20sobre%20suporte%20ou%20parceria%20no%20Cemiteryal%20Death%20Carneficine.", '_blank');
+  }, 300);
+}
+
 
 function generateAdmSelectors() {
     const list = document.getElementById("admList");
@@ -366,108 +659,21 @@ function selectEmoji(newEmoji) {
 }
 
 
-// ----------------------------------------------------
-// 2. LÓGICA DE MÉTICAS (Contador de Acessos)
-// ----------------------------------------------------
-const COUNTER_DOC_REF = {
-    db: null, // Será preenchido na inicialização
-    collection: 'site_metrics',
-    docId: 'access_count'
-};
-
-async function handleAccessCounter() {
-    if (!window.db) return;
-    COUNTER_DOC_REF.db = window.db;
-
-    try {
-        const docRef = window.firestore_doc(COUNTER_DOC_REF.db, COUNTER_DOC_REF.collection, COUNTER_DOC_REF.docId);
-        
-        // 1. Incrementa o contador na primeira visita da sessão
-        if (!sessionStorage.getItem('visited')) {
-            await window.firestore_setDoc(docRef, { count: window.firestore_increment(1) }, { merge: true });
-            sessionStorage.setItem('visited', 'true'); // Marca a sessão
-        }
-        
-        // 2. Lê o valor atual para exibir
-        const docSnap = await window.firestore_getDoc(docRef);
-        if (docSnap.exists()) {
-            const count = docSnap.data().count;
-            document.getElementById('totalAccesses').innerText = count.toLocaleString('pt-BR');
-        } else {
-            document.getElementById('totalAccesses').innerText = '0 (Iniciando Contador)';
-        }
-
-    } catch(error) {
-        console.error("Erro no contador de acessos:", error);
-        document.getElementById('totalAccesses').innerText = 'Erro ao carregar';
+function initializeEmoji() {
+    setTheme(currentTheme); 
+    
+    const display = document.getElementById("currentEmojiDisplay");
+    if (display) {
+        display.innerText = currentEmoji;
     }
+
+    const cursorUrl = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" style="font-size: 20px;"><text y="20">${currentEmoji}</text></svg>') 12 12, auto`;
+    document.body.style.cursor = cursorUrl;
 }
 
-// ----------------------------------------------------
-// 3. LÓGICA DE INTERFACE E MODAIS
-// ----------------------------------------------------
-
-function openLoginModal() {
-    document.getElementById("modalLogin").style.display = "block";
-}
-
-function closeModal(id) {
-    document.getElementById(id).style.display = "none";
-}
-
-// Nenhuma função 'logout' ou 'loadMessages' é necessária no index.html,
-// pois o chat e o logout agora são feitos no chat.html.
-
-function unlock() {
-    const pass = document.getElementById("loginPass").value;
-    const user = document.getElementById("loginUser").value.trim();
-
-    closeModal('modalLogin'); 
-
-    if (pass === "isaacomebosta1010") {
-        
-        userName = user || "ADM Padrão";
-        localStorage.setItem('cemiteryal_username', userName);
-
-        let welcomeMessage = "Senha correta! Redirecionando para o Chat Secreto.";
-        if (user.toLowerCase().includes("morien")) {
-             welcomeMessage = "Bem-vind@ Morien. Redirecionando para o Chat Secreto.";
-        } else if (user) {
-             welcomeMessage = `Bem-vind@ ${user}! Redirecionando para o Chat Secreto.`;
-        }
-        
-        showToast(welcomeMessage, 'success');
-        playClickSound();
-        
-        // Redireciona para a nova página do chat (em nova aba)
-        setTimeout(() => {
-            window.open('./chat.html', '_blank');
-        }, 300);
-
-    } else {
-        showToast("Senha ou usuário incorretos. Tente novamente.", 'error');
-    }
-}
-
-function handleWhatsClick(e) {
-  e.preventDefault(); 
-  
-  showToast("Encaminhando para o WhatsApp. Aviso de Bot ativado.", 'whatsapp');
-  
-  playClickSound();
-
-  setTimeout(() => {
-    window.open("https://api.whatsapp.com/send?phone=5531999999999&text=Ol%C3%A1!%20Gostaria%20de%20falar%20sobre%20suporte%20ou%20parceria%20no%20Cemiteryal%20Death%20Carneficine.", '_blank');
-  }, 300);
-}
-
-
-// Função principal que rastreia cliques e cria o emoji explosivo
+// Funções para áudio e clique
 document.addEventListener("click", e => {
   clicks++;
-  const c = document.getElementById("clicks");
-  if (c) c.innerText = clicks;
-
   const span = document.createElement("span");
   span.innerText = currentEmoji;
   span.style.position = "fixed";
@@ -485,31 +691,14 @@ document.addEventListener("click", e => {
   }
 });
 
-function initializeEmoji() {
-    // Aplica o tema salvo
-    setTheme(currentTheme); 
-    
-    // Aplica o emoji salvo
-    const display = document.getElementById("currentEmojiDisplay");
-    if (display) {
-        display.innerText = currentEmoji;
-    }
 
-    const cursorUrl = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" style="font-size: 20px;"><text y="20">${currentEmoji}</text></svg>') 12 12, auto`;
-    document.body.style.cursor = cursorUrl;
-}
-
-// Inicialização: Gera a lista de ADMs e aplica o emoji salvo
+// Inicialização
 document.addEventListener('DOMContentLoaded', () => {
     generateAdmSelectors();
     initializeEmoji();
-    handleAccessCounter(); // NOVO: Inicia o contador de acessos
-    
-    if (!userName) {
-        // Nada para fazer, o usuário não precisa logar para navegar.
-    }
+    handleAccessCounter(); 
 });
 </script>
 
 </body>
-</html>
+    </html>
