@@ -629,7 +629,7 @@ async function signInUser() {
         showToast(`Bem-vindo, ${userName}! Redirecionando...`, 'success');
         
         // Atraso de 500ms para estabilizar a sessão antes de abrir a nova janela
-        await new Promise(resolve => setTimeout(resolve, 500)); 
+        await new Promise(resolve => setTimeout(resolve, 1000)); 
         
         window.open('./chat.html', '_blank');
 
