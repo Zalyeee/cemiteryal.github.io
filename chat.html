@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Cemiteryal • Chat</title>
+<title>Cemiteryal • Chat Secreto</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -39,6 +39,7 @@ header {
 }
 .owner { border-left: 4px solid crimson; }
 .admin { border-left: 4px solid cyan; }
+.user { border-left: 4px solid gray; }
 
 footer {
   display: flex;
@@ -73,7 +74,6 @@ button {
 </header>
 
 <div id="statusBar">Carregando status…</div>
-
 <div id="messages"></div>
 
 <footer>
@@ -90,7 +90,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebas
 import {
   getAuth,
   onAuthStateChanged,
-  signOut
+  signOut,
+  setPersistence,
+  browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 import {
   getFirestore,
@@ -105,6 +107,7 @@ import {
   setDoc
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
+/* 🔥 CONFIG FIREBASE */
 const firebaseConfig = {
   apiKey: "AIzaSyAsHXQr5k3HviBVEFPz918g_zcjUZdFpJY",
   authDomain: "cemiteryal-site.firebaseapp.com",
@@ -118,13 +121,16 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+/* ✅ FIX DO LOGIN EXPIRADO */
+await setPersistence(auth, browserLocalPersistence);
+
 let currentUser;
-let userRole = "admin";
+let userRole = "user";
 let channelOpen = true;
 
+/* 🎵 Música */
 const audio = document.getElementById("ambientAudio");
 audio.volume = 0.12;
-
 window.toggleMusic = () => {
   if (audio.paused) {
     audio.play();
@@ -134,29 +140,41 @@ window.toggleMusic = () => {
     localStorage.setItem("music", "off");
   }
 };
-
 if (localStorage.getItem("music") === "on") audio.play();
 
+/* 🔐 Auth */
 onAuthStateChanged(auth, async user => {
   if (!user) {
+    alert("Sessão expirada. Faça login novamente.");
     location.href = "index.html";
     return;
   }
 
   currentUser = user;
 
-  const userSnap = await getDoc(doc(db, "users", user.uid));
-  if (userSnap.exists()) userRole = userSnap.data().role;
+  const userRef = doc(db, "users", user.uid);
+  const snap = await getDoc(userRef);
+
+  if (snap.exists()) {
+    userRole = snap.data().role;
+  } else {
+    await setDoc(userRef, {
+      email: user.email,
+      role: "user",
+      createdAt: serverTimestamp()
+    });
+    userRole = "user";
+  }
 
   document.getElementById("userInfo").innerText =
-    (userRole === "owner" ? "👑" : "🛡️") +
-    " " +
-    (user.displayName || user.email.split("@")[0]);
+    (userRole === "owner" ? "👑" : userRole === "admin" ? "🛡️" : "👤") +
+    " " + (user.displayName || user.email.split("@")[0]);
 
   loadStatus();
   loadMessages();
 });
 
+/* 🔔 Status do canal */
 function loadStatus() {
   const ref = doc(db, "config", "channel");
   onSnapshot(ref, snap => {
@@ -174,6 +192,7 @@ function loadStatus() {
   });
 }
 
+/* 💬 Mensagens */
 function loadMessages() {
   const q = query(collection(db, "chat"), orderBy("time"));
   onSnapshot(q, snap => {
@@ -190,9 +209,10 @@ function loadMessages() {
   });
 }
 
+/* ✉️ Enviar */
 window.sendMessage = async () => {
   if (!channelOpen) {
-    alert("O canal está fechado.");
+    alert("Canal fechado.");
     return;
   }
 
@@ -210,13 +230,16 @@ window.sendMessage = async () => {
   input.value = "";
 };
 
+/* 🔒 Abrir/Fechar canal */
 window.toggleChannel = async () => {
   if (userRole !== "owner") return;
   await setDoc(doc(db, "config", "channel"), { open: !channelOpen }, { merge: true });
 };
 
-window.logout = () => {
-  signOut(auth).then(() => location.href = "index.html");
+/* 🚪 Logout */
+window.logout = async () => {
+  await signOut(auth);
+  location.href = "index.html";
 };
 </script>
 
